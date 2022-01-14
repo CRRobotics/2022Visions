@@ -19,6 +19,7 @@ while True:
 
     ## mask of green (36,25,25) ~ (86, 255,255)
     # mask = cv2.inRange(hsv, (36, 25, 25), (86, 255,255))
+    # mask = cv2.inRange(hsv, (36, 100, 100), (150, 255,255))
     mask = cv2.inRange(hsv, (57, 150,255), (111, 255,255))
 
     ## slice the green

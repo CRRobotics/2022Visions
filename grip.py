@@ -43,7 +43,7 @@ class GripPipeline:
 
         # Step Find_Contours0:
         self.__find_contours_input = self.hsv_threshold_output
-        (self.find_contours_output) = self.__find_contours(self.__find_contours_input, self.__find_contours_external_only)
+        (self.find_contours_output) = self.__find_contours(input=self.__find_contours_input, external_only=self.__find_contours_external_only)
 
         # Step Convex_Hulls0:
         self.__convex_hulls_contours = self.find_contours_output
@@ -83,7 +83,7 @@ class GripPipeline:
         else:
             mode = cv2.RETR_LIST
         method = cv2.CHAIN_APPROX_SIMPLE
-        im2, contours, hierarchy =cv2.findContours(input, mode=mode, method=method)
+        contours, hierarchy =cv2.findContours(image=input, mode=mode, method=method)
         return contours
 
     @staticmethod
@@ -111,3 +111,17 @@ class GripPipeline:
         return cv2.bitwise_and(input, input, mask=mask)
 
 
+def main():
+    pipeline = GripPipeline()
+    cap = cv2.VideoCapture(0)
+
+    while True:
+        success, img = cap.read()
+        pipeline.process(img)
+
+        cv2.imshow("Image", pipeline.mask_output)
+        cv2.waitKey(1)
+
+
+if __name__ == "__main__":
+    main()
