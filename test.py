@@ -24,7 +24,6 @@ while True:
         result = cv.bitwise_and(frame, frame, mask = mask)
 
         cv.imshow('frame', frame)
-        cv.imshow("frame", mask)
         cv.imshow('mask', mask)
         cv.imshow('result', result)
         if cv.waitKey(20) & 0xFF == ord("d"):
