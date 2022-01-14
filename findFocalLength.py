@@ -24,7 +24,7 @@ WIDTH = 5.0
 DISTANCE = 12.0
 
 if __name__ == "__main__":
-    img = cv.imread("tape8.jpg")
+    img = cv.imread("tape.jpg")
     marker = findMarker(img)
     print("marker: ", marker[1][0])
     focalLength = (marker[1][0] * DISTANCE) / WIDTH
