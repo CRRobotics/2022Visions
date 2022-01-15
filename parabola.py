@@ -1,3 +1,4 @@
+import math
 import cv2
 import numpy as np
 import functions
@@ -38,7 +39,14 @@ while True:
 
         #for some reason, going up decreases the y value
         vertex = functions.getVertex(a,b,c)
-        print(vertex)
+        #print(vertex)
+        
+        angle = functions.getAngle(frame, vertex)
+        angle = functions.angleToRadians(angle)
+        print(angle)
+
+        distance = h/math.tan(angle)
+        cv2.putText(frame, f"{distance} pixels", (frame.shape[1] - 200, frame.shape[0] - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 3 )
     
 
 

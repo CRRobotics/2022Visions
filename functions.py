@@ -1,3 +1,5 @@
+import math
+from re import X
 from tkinter import W
 import cv2
 import numpy
@@ -84,5 +86,25 @@ def filterSmallContours(contours, min_size = targetVisions.MIN_AREA_CONTOUR):
     return tempCounters
 
 def getVertex(a,b,c):
-    #y = ax^2+bx+c
+    "y = ax^2+bx+c"
     return ((-b / (2 * a)), (((4 * a * c) - (b * b)) / (4 * a)))
+
+
+def getAngle(img, coordinate:tuple):
+    h, w, c = img.shape
+    fov = 45
+    cX = coordinate[0]
+    cY = coordinate[1]
+
+    centerPixel = (int(h/2), int(w/2))
+    distanceFromCenter = (math.sqrt(((cX-centerPixel[0])**2)+((cY-centerPixel[1])**2)))
+    pixelRepresent = fov/(math.sqrt(h**2 + w**2))
+    return int(pixelRepresent*distanceFromCenter)
+
+#def getPixelRepresent(img, pixel):
+#    h, w, c = img.shape
+#    fov = 45
+#    pixelRepresent = fov/(math.sqrt(h**2 + w**2))
+#    return pixelRepresent
+def angleToRadians(degrees):
+    return degrees*(math.pi/180)
