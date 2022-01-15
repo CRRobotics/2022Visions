@@ -58,7 +58,7 @@ def Center(img, leftMostCoordinate, rightMostCoordinate):
     xLeft = leftMostCoordinate[0]
 
     xRight = rightMostCoordinate[0]
-    Offset = int(w/10)
+    Offset = int(w/9)
 
     distanceFromSideL = w - xRight - Offset
     distanceFromSideR = w - xRight + Offset

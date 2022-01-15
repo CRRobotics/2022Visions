@@ -2,8 +2,8 @@ import findFocalLength
 import cv2 as cv
 import numpy as np
 import imutils
-
-cap = cv.VideoCapture(0)
+import targetVisions
+cap = cv.VideoCapture(1)
 
 if not cap.isOpened():
     print("error")
@@ -12,7 +12,11 @@ if not cap.isOpened():
 while True:
     isTrue, frame = cap.read()
     if isTrue:
-        marker = findFocalLength.findMarker(frame)
+        #frame = targetVisions.HSVFilter(frame)
+        try:
+            marker = findFocalLength.findMarker(frame)
+        except:
+            pass
         # focalLength = 1502.5880859375
         focalLength = 800
         inches = findFocalLength.getDistance(focalLength, findFocalLength.WIDTH, marker[1][0])

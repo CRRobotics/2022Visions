@@ -2,11 +2,13 @@ import cv2 as cv
 import numpy as np
 import imutils
 from imutils import paths
+import targetVisions
 
 def findMarker(img):
     # grayscale, blur, detect edges
-    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    blur = cv.GaussianBlur(gray, (5, 5,), 0)
+    #gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    #blur = cv.GaussianBlur(gray, (5, 5,), 0)
+    blur = targetVisions.HSVFilter(img)
     edges = cv.Canny(blur, 35, 125)
     cv.imshow("edges", edges)
     # assume largest counter is tape
@@ -22,12 +24,14 @@ def getDistance(focalLength, width, pixelWidth):
 
 WIDTH = 5.0
 DISTANCE = 12.0
+WEBCAMFOCALLENGTH = 1502.5880859375
+
 
 if __name__ == "__main__":
     img = cv.imread("tape.jpg")
     marker = findMarker(img)
     print("marker: ", marker[1][0])
-    focalLength = (marker[1][0] * DISTANCE) / WIDTH
+    focalLength = (marker[1][0] * DISTANCE) / WIDTH #1502.5880859375
     inches = getDistance(focalLength, WIDTH, marker[1][0])
     print("focalLength: ", focalLength)
     box = cv.cv.BoxPoints(marker) if imutils.is_cv2() else cv.boxPoints(marker)
