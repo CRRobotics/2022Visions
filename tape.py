@@ -43,6 +43,7 @@ def main():
 
         cv2.imshow("image", frame)
         cv2.waitKey(1)
+        break
 
 if __name__ == "__main__":
     main()

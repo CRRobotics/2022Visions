@@ -82,3 +82,7 @@ def filterSmallContours(contours, min_size = targetVisions.MIN_AREA_CONTOUR):
             continue
         tempCounters.append(contour)
     return tempCounters
+
+def getVertex(a,b,c):
+    #y = ax^2+bx+c
+    return ((-b / (2 * a)), (((4 * a * c) - (b * b)) / (4 * a)))
