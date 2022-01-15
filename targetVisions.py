@@ -42,6 +42,8 @@ while True:
         contours = tempCounters
 
         convexHulls = [cv2.convexHull(contour) for contour in contours]
+        print(convexHulls)
+        print("\n\n\n")
         cv2.drawContours(frame, convexHulls, -1, (0, 0, 255), 1)
 
         cv2.imshow("mask", mask)

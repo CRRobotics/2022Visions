@@ -12,9 +12,9 @@ class GripPipeline:
         """initializes all values to presets or None if need to be set
         """
 
-        self.__hsv_threshold_hue = [57.46402877697842, 110.88737201365187]
-        self.__hsv_threshold_saturation = [147.9091726618705, 255.0]
-        self.__hsv_threshold_value = [255.0, 255.0]
+        self.__hsv_threshold_hue = [73.0, 112.0]
+        self.__hsv_threshold_saturation = [108.0,174.0]
+        self.__hsv_threshold_value = [162.0, 255.0]
 
         self.hsv_threshold_output = None
 
@@ -117,7 +117,6 @@ def main():
 
     while True:
         success, img = cap.read()
-        pipeline.process(img)
 
         cv2.imshow("Image", pipeline.mask_output)
         cv2.waitKey(1)
