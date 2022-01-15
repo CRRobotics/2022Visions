@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import math
+import functions
 
 # CONSTANTS
 # these are random numbers for now, will change later
@@ -42,8 +43,19 @@ while True:
         contours = tempCounters
 
         convexHulls = [cv2.convexHull(contour) for contour in contours]
-        print(convexHulls)
-        print("\n\n\n")
+        
+        if convexHulls:
+            print("\n\n\n")
+            cx = convexHulls[0].tolist()
+            coordsOfConvexHulls = [x[0] for x in cx] #[[x1,y1], [x2,y2],[x3,y3],...]
+            #im having a stroke trying to get a list of (x,y) coordinates
+            c = functions.get_leftmost_and_rightmost_coords(frame, coordsOfConvexHulls)
+            if c:
+                print(functions.Center(frame, c[0],c[1]))
+            #action = functions.Center(frame, c[0], c[1])
+            #print(action)
+
+
         cv2.drawContours(frame, convexHulls, -1, (0, 0, 255), 1)
 
         cv2.imshow("mask", mask)

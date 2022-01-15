@@ -1,3 +1,4 @@
+from tkinter import W
 import cv2
 import numpy
 
@@ -31,6 +32,26 @@ import numpy
 #        toReturn["x"] = "left"
 #    
 #    return toReturn
+
+
+def get_leftmost_and_rightmost_coords(img, convex_hulls:list):
+    h, w, c = img.shape
+
+    minX = None
+    maxX = None
+
+    for cx, cy in convex_hulls:
+        if not minX:
+            minX = (cx, cy)
+            maxX = (cx, cy)
+        if cx < minX[0]:
+            minX = (cx, cy)
+        if cx > maxX[0]:
+            maxX = (cx, cy)
+
+    return [minX,maxX]
+    
+        
 
 def Center(img, leftMostCoordinate, rightMostCoordinate):
     h, w, c = img.shape
