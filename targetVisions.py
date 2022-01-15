@@ -1,20 +1,6 @@
 import cv2
 import numpy as np
-import math
-import functions
-
-# CONSTANTS
-# these are random numbers for now, will change later
-WIDTH                   = 5.0
-HEIGHT                  = 480.0
-HEIGHT_OF_CAMERA        = 38.5
-HEIGHT_OF_TARGET        = 102.25 #8 * 12 + 2.25
-HEIGHT_TO_TARGET        = HEIGHT_OF_TARGET - HEIGHT_OF_CAMERA
-CAMERA_ANGLE		    = 16.4
-OUTER_TARGET_WIDTH      = 39.25
-INNER_TARGET_DEPTH      = 29.25
-BALL_RADIUS             = 3.5
-MIN_AREA_CONTOUR        = 50.0
+import lib.helperFunctions as helperFunctions
 
 # filter = {"hue": [57, 111], "sat":[148, 255], "val": [255, 255]}
 # hue = [57, 111]
@@ -25,7 +11,7 @@ hue = [0, 180]
 sat = [73, 255]
 val = [255, 255]
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 
 def HSVFilter(frame):
@@ -33,6 +19,7 @@ def HSVFilter(frame):
     mask = cv2.inRange(hsv, (hue[0], sat[0], val[0]), (hue[1], sat[1], val[1]))
     return mask
 
+# runs target tracking
 def main():
     while True:
         try:
@@ -42,7 +29,7 @@ def main():
 
             contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-            contours = functions.filterSmallContours(contours)
+            contours = helperFunctions.filterContours(contours)
 
             convexHulls = [cv2.convexHull(contour) for contour in contours]
             
@@ -51,9 +38,9 @@ def main():
                 cx = convexHulls[0].tolist()
                 coordsOfConvexHulls = [x[0] for x in cx] #[[x1,y1], [x2,y2],[x3,y3],...]
                 #im having a stroke trying to get a list of (x,y) coordinates
-                c = functions.get_leftmost_and_rightmost_coords(frame, coordsOfConvexHulls)
+                c = helperFunctions.get_leftmost_and_rightmost_coords(frame, coordsOfConvexHulls)
                 if c:
-                    print(functions.Center(frame, c[0],c[1]))
+                    print(helperFunctions.Center(frame, c[0],c[1]))
                 #action = functions.Center(frame, c[0], c[1])
                 #print(action)
 

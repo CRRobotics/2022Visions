@@ -1,7 +1,7 @@
 import math
 import cv2
 import numpy as np
-import functions
+import lib.helperFunctions as helperFunctions
 import targetVisions
 import tape
 
@@ -11,7 +11,7 @@ while True:
     h, w, c = frame.shape
     mask = targetVisions.HSVFilter(frame)
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    contours = functions.filterSmallContours(contours)
+    contours = helperFunctions.filterSmallContours(contours)
     convexHulls = [cv2.convexHull(contour) for contour in contours]
     cv2.drawContours(frame, convexHulls, -1, (255,0,0), 1)
     centers = tape.reflectiveTape.getCenters(frame, contours)
@@ -38,11 +38,11 @@ while True:
 
 
         #for some reason, going up decreases the y value
-        vertex = functions.getVertex(a,b,c)
+        vertex = helperFunctions.getVertex(a,b,c)
         #print(vertex)
         
-        angle = functions.getAngle(frame, vertex)
-        angle = functions.angleToRadians(angle)
+        angle = helperFunctions.getAngle(frame, vertex)
+        angle = helperFunctions.angleToRadians(angle)
         print(angle)
 
         distance = h/math.tan(angle)

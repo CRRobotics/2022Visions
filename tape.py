@@ -3,7 +3,7 @@ from unittest import makeSuite
 import cv2
 import numpy as np
 import targetVisions
-import functions
+import lib.helperFunctions as helperFunctions
 
 class reflectiveTape():
     """reflective tape object, will hold the convex hulls of the object. trying to get convex hulls for each object"""
@@ -31,7 +31,7 @@ def main():
         mask = targetVisions.HSVFilter(frame)
         contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-        contours = functions.filterSmallContours(contours)
+        contours = helperFunctions.filterSmallContours(contours)
         try:
             centers = reflectiveTape.getCenters(frame, contours=contours)
         except:
