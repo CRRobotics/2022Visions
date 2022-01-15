@@ -34,20 +34,22 @@ import numpy
 
 def Center(img, leftMostCoordinate, rightMostCoordinate):
     h, w, c = img.shape
-    yLeft = leftMostCoordinate[1]
     xLeft = leftMostCoordinate[0]
 
-    yRight = rightMostCoordinate[1]
-    xRIght = rightMostCoordinate[0]
+    xRight = rightMostCoordinate[0]
     Offset = int(w/10)
 
-    distanceFromSideL = w-xRIght-Offset
-    distanceFromSideR = w-xRIght+Offset
+    distanceFromSideL = w - xRight - Offset
+    distanceFromSideR = w - xRight + Offset
 
+    # 1 == go right
+    # -1 == go left
+    # 0 == centered
     if xLeft < distanceFromSideL:
-        return "go right"
+        return 1
     elif xLeft > distanceFromSideR:
-        return "go left"
+        return -1
+    return 0
 
 
 
