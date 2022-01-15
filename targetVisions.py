@@ -21,11 +21,11 @@ MIN_AREA_CONTOUR        = 50.0
 # sat = [148, 255]
 # val = [255, 255]
 
-hue = [73, 112]
-sat = [108, 174]
-val = [162, 255]
+hue = [0, 180]
+sat = [73, 255]
+val = [255, 255]
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 while True:
     try:
