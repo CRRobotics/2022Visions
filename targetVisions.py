@@ -41,13 +41,8 @@ def main():
             mask = cv2.inRange(hsv, (hue[0], sat[0], val[0]), (hue[1], sat[1], val[1]))
 
             contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-            tempCounters = []
-            for contour in contours:
-                area = cv2.contourArea(contour)
-                if area < MIN_AREA_CONTOUR:
-                    continue
-                tempCounters.append(contour)
-            contours = tempCounters
+
+            contours = functions.filterSmallContours(contours)
 
             convexHulls = [cv2.convexHull(contour) for contour in contours]
             

@@ -1,7 +1,7 @@
 from tkinter import W
 import cv2
 import numpy
-
+import targetVisions
 
 
 
@@ -53,6 +53,7 @@ def get_leftmost_and_rightmost_coords(img, convex_hulls:list):
     
         
 
+
 def Center(img, leftMostCoordinate, rightMostCoordinate):
     h, w, c = img.shape
     xLeft = leftMostCoordinate[0]
@@ -73,4 +74,11 @@ def Center(img, leftMostCoordinate, rightMostCoordinate):
     return 0
 
 
-
+def filterSmallContours(contours, min_size = targetVisions.MIN_AREA_CONTOUR):
+    tempCounters = []
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if area < min_size:
+            continue
+        tempCounters.append(contour)
+    return tempCounters
