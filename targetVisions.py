@@ -6,7 +6,7 @@ import library.helperFunctions as helperFunctions
 # hue = [57, 111]
 # sat = [148, 255]
 # val = [255, 255]
-
+#magic number storage
 hue = [0, 180]
 sat = [73, 255]
 val = [255, 255]
