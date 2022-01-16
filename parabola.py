@@ -1,7 +1,7 @@
 import math
 import cv2
 import numpy as np
-import lib.helperFunctions as helperFunctions
+import library.helperFunctions as helperFunctions
 import targetVisions
 import tape
 

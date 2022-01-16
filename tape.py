@@ -3,7 +3,7 @@ from unittest import makeSuite
 import cv2
 import numpy as np
 import targetVisions
-import lib.helperFunctions as helperFunctions
+import library.helperFunctions as helperFunctions
 
 class reflectiveTape():
     """reflective tape object, will hold the convex hulls of the object. trying to get convex hulls for each object"""

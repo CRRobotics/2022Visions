@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import lib.helperFunctions as helperFunctions
+import library.helperFunctions as helperFunctions
 
 # filter = {"hue": [57, 111], "sat":[148, 255], "val": [255, 255]}
 # hue = [57, 111]
@@ -23,6 +23,7 @@ def HSVFilter(frame):
 def main():
     while True:
         try:
+            # STEP 1: IDENTIFY THE TARGET
             isTrue, frame = cap.read()
             hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
             mask = cv2.inRange(hsv, (hue[0], sat[0], val[0]), (hue[1], sat[1], val[1]))
@@ -53,6 +54,16 @@ def main():
             if cv2.waitKey(20) & 0xFF == ord("d"):
                 print("done")
                 break
+
+            # STEP 2: DETERMINE THE PARABOLIC FIT WITH LEAST SQUARES USING THE CENTER COORDINATES OF THE TAPE
+            
+            # STEP 3: DETERMINE EITHER DISTANCE OR HORIZONTAL ANGLE TO TARGET?
+
+            # STEP 4: DETERMINE EITHER DISTANCE OR HORIZONTAL ANGEL TO TARGET?
+
+            # STEP 5: DETERMINE VERTICAL/ELEVATION ANGLE TO TARGET
+
+            # STEP 6: DETERMINE HORIZONTAL DISTANCE TO TARGET
         except:
             pass
 
