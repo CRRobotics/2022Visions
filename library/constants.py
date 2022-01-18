@@ -10,3 +10,12 @@ OUTER_TARGET_WIDTH      = 39.25
 INNER_TARGET_DEPTH      = 29.25
 BALL_RADIUS             = 3.5
 MIN_AREA_CONTOUR        = 50.0
+
+hue = [0, 180]
+sat = [73, 255]
+val = [255, 255]
+
+# filter = {"hue": [57, 111], "sat":[148, 255], "val": [255, 255]}
+# hue = [57, 111]
+# sat = [148, 255]
+# val = [255, 255]

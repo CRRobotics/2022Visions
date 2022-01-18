@@ -35,7 +35,12 @@ import constants
 #    
 #    return toReturn
 
-#
+# HELPER FUNCTIONS
+def HSVFilter(frame):
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, (constants.hue[0], constants.sat[0], constants.val[0]), (constants.hue[1], constants.sat[1], constants.val[1]))
+    return mask
+
 def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR):
     tempCounters = []
     for contour in contours:
@@ -81,6 +86,7 @@ def Center(img, leftMostCoordinate, rightMostCoordinate):
         return -1
     return 0
 
+# MATH
 def getVertex(a,b,c):
     "y = ax^2+bx+c"
     return ((-b / (2 * a)), (((4 * a * c) - (b * b)) / (4 * a)))
