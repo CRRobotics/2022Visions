@@ -5,6 +5,10 @@ import library.helperFunctions as helperFunctions
 import targetVisions
 import tape
 
+
+HOOP_HEIGHT = 10 #I think?
+
+
 cap = cv2.VideoCapture(1)
 while True:
     success, frame = cap.read()
@@ -54,8 +58,8 @@ while True:
         angle = helperFunctions.angleToRadians(angle)
         print(angle)
 
-        distance = h/math.tan(angle)
-        cv2.putText(frame, f"{distance} pixels", (frame.shape[1] - 200, frame.shape[0] - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 3 )
+        distance = HOOP_HEIGHT/math.tan(angle)
+        cv2.putText(frame, f"{distance} feet", (frame.shape[1] - 200, frame.shape[0] - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 3 )
         #this is still in pixels i think
 
 
