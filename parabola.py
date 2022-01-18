@@ -60,7 +60,6 @@ while True:
 
         distance = HOOP_HEIGHT/math.tan(angle)
         cv2.putText(frame, f"{distance} feet", (frame.shape[1] - 200, frame.shape[0] - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 3 )
-        #this is still in pixels i think
 
 
 
