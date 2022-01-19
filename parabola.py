@@ -9,19 +9,22 @@ import tape
 HOOP_HEIGHT = 10 #I think?
 
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 while True:
     success, frame = cap.read()
 
-    # height, width
+    # height, width 
     h, w, c = frame.shape
+    print(h,w)
 
     # mask (edit magic numbers in HSVFilter)
-    mask = targetVisions.HSVFilter(frame)
+    mask = functions.HSVFilter(frame)
 
     # lines idk
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    contours = functions.filterSmallContours(contours)
+    contours = functions.filterContours(contours)
     convexHulls = [cv2.convexHull(contour) for contour in contours]
     cv2.drawContours(frame, convexHulls, -1, (255,0,0), 1)
 
@@ -54,7 +57,7 @@ while True:
         vertex = functions.getVertex(a,b,c)
 
         # mafs        
-        angle = functions.getAngle(frame, vertex)
+        angle = functions.getAngleVertical(frame, vertex)
         angle = functions.angleToRadians(angle)
         print(angle)
 
