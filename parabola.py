@@ -52,7 +52,9 @@ while True:
 
         # for some reason, going up decreases the y value
         # getting vertex
+        #plotting vertex
         vertex = functions.getVertex(a,b,c)
+        cv2.circle(frame, vertex, 3, (255, 0, 0), -1)
 
         # mafs        
         angle = functions.getAngle(frame, 1, vertex)
