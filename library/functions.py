@@ -3,7 +3,7 @@ from re import X
 from tkinter import W
 import cv2
 import numpy
-import constants
+import library.constants as constants
 
 
 
