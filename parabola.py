@@ -57,7 +57,7 @@ while True:
         vertex = functions.getVertex(a,b,c)
 
         # mafs        
-        angle = functions.getAngleVertical(frame, vertex)
+        angle = functions.getAngle(frame, 1, vertex)
         angle = functions.angleToRadians(angle)
         print(angle)
 
