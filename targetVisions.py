@@ -4,9 +4,11 @@ import library.constants as constants
 import library.functions as functions
 
 cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 # runs target tracking
-def main():
+def process():
     while True:
         try:
             # STEP 1: IDENTIFY THE TARGET
@@ -22,19 +24,21 @@ def main():
             # getting convex hulls
             convexHulls = [cv2.convexHull(contour) for contour in contours]
             
-            if convexHulls:
-                print("\n\n\n")
-                cx = convexHulls[0].tolist()
-                coordsOfConvexHulls = [x[0] for x in cx] #[[x1,y1], [x2,y2],[x3,y3],...]
-                #im having a stroke trying to get a list of (x,y) coordinates
-                c = functions.get_leftmost_and_rightmost_coords(frame, coordsOfConvexHulls)
-                if c:
-                    print(functions.Center(frame, c[0],c[1]))
-                #action = functions.Center(frame, c[0], c[1])
-                #print(action)
+            # if convexHulls:
+            #     print("\n\n\n")
+            #     cx = convexHulls[0].tolist()
+            #     coordsOfConvexHulls = [x[0] for x in cx] #[[x1,y1], [x2,y2],[x3,y3],...]
+            #     #im having a stroke trying to get a list of (x,y) coordinates
+            #     c = functions.get_leftmost_and_rightmost_coords(frame, coordsOfConvexHulls)
+            #     if c:
+            #         print(functions.Center(frame, c[0],c[1]))
+            #     #action = functions.Center(frame, c[0], c[1])
+            #     #print(action)
             
             # drawing contours on the frame to display
             cv2.drawContours(frame, convexHulls, -1, (0, 0, 255), 1)
+
+            # getting the horizontal and vertical angles
 
             # displaying the frame with the convex hull of the tape
             cv2.imshow("mask", mask)
@@ -60,4 +64,4 @@ def main():
             pass
 
 if __name__ == "__main__":
-    main()
+    process()

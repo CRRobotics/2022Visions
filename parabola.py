@@ -2,8 +2,6 @@ import math
 import cv2
 import numpy as np
 import library.functions as functions
-import targetVisions
-import tape
 
 
 HOOP_HEIGHT = 10 #I think?
@@ -29,7 +27,7 @@ while True:
     cv2.drawContours(frame, convexHulls, -1, (255,0,0), 1)
 
     # getting centroid of each detected tape strip
-    centers = tape.reflectiveTape.getCenters(frame, contours)
+    centers = functions.getCenters(frame, contours)
 
     #execute if there are at least three detected tape strips
     if len(centers) >= 3:
@@ -57,7 +55,7 @@ while True:
         vertex = functions.getVertex(a,b,c)
 
         # mafs        
-        angle = functions.getAngleVertical(frame, vertex)
+        angle = functions.getAngle(frame, 1, vertex)
         angle = functions.angleToRadians(angle)
         print(angle)
 
