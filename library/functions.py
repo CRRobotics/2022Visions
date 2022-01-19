@@ -1,6 +1,6 @@
 import math
 from re import X
-from tkinter import W
+from tkinter import HORIZONTAL, W
 import cv2
 import numpy
 
@@ -42,11 +42,13 @@ else:
 
 # HELPER FUNCTIONS
 def HSVFilter(frame):
+    "returns filtered img"
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, (constants.hue[0], constants.sat[0], constants.val[0]), (constants.hue[1], constants.sat[1], constants.val[1]))
     return mask
 
 def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR):
+    "filters out contours that are smaller than min_size"
     tempCounters = []
     for contour in contours:
         area = cv2.contourArea(contour)
@@ -56,6 +58,7 @@ def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR):
     return tempCounters
 
 def get_leftmost_and_rightmost_coords(img, convex_hulls:list):
+    "returns leftmost and rightmost coords in convex hull"
     h, w, c = img.shape
 
     minX = None
@@ -73,6 +76,7 @@ def get_leftmost_and_rightmost_coords(img, convex_hulls:list):
     return [minX,maxX]
     
 def Center(img, leftMostCoordinate, rightMostCoordinate):
+    "tells if camera is centered. *we arent gon use this lmao"
     h, w, c = img.shape
     xLeft = leftMostCoordinate[0]
 
@@ -111,8 +115,13 @@ def getVertex(a,b,c):
 # @param orientation The orientation of the angle (0 gets horizontal angle to the coordinate, 1 gets vertical angle to the tape)
 # NOTE: vertical angle is only accurate if the x-coordinate of the center coordinate is in the middle of the frame
 # @param coordinate The coordinate of the center of the tape or parabola
-
 def getAngle(img, orientation:int, coordinate:tuple):
+    """
+ gets the angle based on the fov, orientation, and coordinate of the parabola representing the target
+ @param img The image or frame to use
+ @param orientation The orientation of the angle (0 gets horizontal angle to the coordinate, 1 gets vertical angle to the tape)
+ NOTE: vertical angle is only accurate if the x-coordinate of the center coordinate is in the middle of the frame
+ @param coordinate The coordinate of the center of the tape or parabola"""
     h, w, c = img.shape
     cX = coordinate[0]
     cY = coordinate[1]
