@@ -41,9 +41,13 @@ def process():
             # getting the centers of the contours in the frame
             centers = functions.getCenters(frame, contours)
 
+            if len(centers) >= 3:
+                vertex = functions.getParabola(frame, centers)
+
+
             # getting and drawing the horizontal and vertical angles
-            horizontalAngle = functions.getAngle(frame, 0, centers[0])
-            verticalAngle = functions.getAngle(frame, 1, centers[0])
+            horizontalAngle = functions.getAngle(frame, 0, centers[0]) if len(centers) >= 3 else functions.getAngle(frame, 0, vertex)
+            verticalAngle = functions.getAngle(frame, 1, centers[0]) if len(centers) >= 3 else functions.getAngle(frame, 1, vertex)
             cv2.putText(frame, "Horizontal Angle: " + str(horizontalAngle) + "  Vertical Angle: " + str(verticalAngle), \
                 (frame.shape[1] - 700, frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
