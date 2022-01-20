@@ -1,6 +1,6 @@
 import math
 from re import X
-from tkinter import HORIZONTAL, W
+# from tkinter import HORIZONTAL, W
 import cv2
 import numpy as np
 if __name__ == "__main__":
@@ -104,6 +104,8 @@ def getCenters(img, contours):
     return centres
 
 def getParabola(frame, centers):
+    h, w, _ = frame.shape
+
     yVals = [x[1] for x in centers]
     xVals = [x[0] for x in centers]
 
@@ -112,7 +114,7 @@ def getParabola(frame, centers):
     a, b, c = fit
 
     # x points for drawing the parabols
-    xVals = np.linspace(1,w-1,100).astype(np.int32)
+    xVals = np.linspace(1, w - 1, 100).astype(np.int32)
 
     # returns Y values for parabola
     fit_equation = a * np.square(xVals) + b * xVals + c 
@@ -128,6 +130,8 @@ def getParabola(frame, centers):
     vertex = getVertex(a,b,c)
     cv2.circle(frame, vertex, 3, (255, 0, 0), -1)
     return vertex
+
+
 # MATH
 def getVertex(a,b,c):
     "y = ax^2+bx+c"
