@@ -2,9 +2,7 @@ import math
 from re import X
 from tkinter import HORIZONTAL, W
 import cv2
-import numpy
-
-from library.constants import RADIANS_PER_PIXEL_X
+import numpy as np
 if __name__ == "__main__":
     import constants
 else:
@@ -105,6 +103,31 @@ def getCenters(img, contours):
         cv2.circle(img, centres[-1], 3, (0, 0, 0), -1)
     return centres
 
+def getParabola(frame, centers):
+    yVals = [x[1] for x in centers]
+    xVals = [x[0] for x in centers]
+
+    # coefficients of parabola that best fits centroids
+    fit = np.polyfit(xVals, yVals, 2)
+    a, b, c = fit
+
+    # x points for drawing the parabols
+    xVals = np.linspace(1,w-1,100).astype(np.int32)
+
+    # returns Y values for parabola
+    fit_equation = a * np.square(xVals) + b * xVals + c 
+
+    # drawing parabola
+    newXY = list(zip(xVals, fit_equation))
+    ctr = np.array(newXY).reshape((-1,1,2)).astype(np.int32)
+    cv2.drawContours(frame, [ctr], -1, (255,0,0), 1)
+
+    # for some reason, going up decreases the y value
+    # getting vertex
+    #plotting vertex
+    vertex = getVertex(a,b,c)
+    cv2.circle(frame, vertex, 3, (255, 0, 0), -1)
+    return vertex
 # MATH
 def getVertex(a,b,c):
     "y = ax^2+bx+c"
@@ -130,10 +153,10 @@ def getAngle(img, orientation:int, coordinate:tuple):
     # distanceFromCenter = (math.sqrt(((cX - centerPixel[0]) **2 ) + ((cY - centerPixel[1]) ** 2)))
     centerPixel = (int(w / 2), int(h / 2))
     if orientation == 0:
-        distanceFromCenter = abs(centerPixel[0] - cX)
+        distanceFromCenter = cX - centerPixel[0]
         angle = constants.RADIANS_PER_PIXEL_X * distanceFromCenter
     elif orientation == 1:
-        distanceFromCenter = abs(centerPixel[1] - cY)
+        distanceFromCenter = centerPixel[1] - cY
         angle = constants.RADIANS_PER_PIXEL_Y * distanceFromCenter
     return angleToDegrees(angle)
     # pixelRepresent = fov/(math.sqrt(h ** 2 + w ** 2))

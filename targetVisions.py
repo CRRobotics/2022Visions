@@ -19,7 +19,7 @@ def process():
 
             # finding and filtering the contours in the frame to only get the contour of the tape
             contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-            contours = functions.filterContours(contours)
+            contours = functions.filterContours(contours, 300.0)
 
             # getting convex hulls
             convexHulls = [cv2.convexHull(contour) for contour in contours]
@@ -35,10 +35,17 @@ def process():
             #     #action = functions.Center(frame, c[0], c[1])
             #     #print(action)
             
-            # drawing contours on the frame to display
+            # drawing convexHulls on the frame to display
             cv2.drawContours(frame, convexHulls, -1, (0, 0, 255), 1)
 
-            # getting the horizontal and vertical angles
+            # getting the centers of the contours in the frame
+            centers = functions.getCenters(frame, contours)
+
+            # getting and drawing the horizontal and vertical angles
+            horizontalAngle = functions.getAngle(frame, 0, centers[0])
+            verticalAngle = functions.getAngle(frame, 1, centers[0])
+            cv2.putText(frame, "Horizontal Angle: " + str(horizontalAngle) + "  Vertical Angle: " + str(verticalAngle), \
+                (frame.shape[1] - 700, frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
             # displaying the frame with the convex hull of the tape
             cv2.imshow("mask", mask)
@@ -61,7 +68,13 @@ def process():
 
             # STEP 7: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
         except:
-            pass
+            isTrue, frame = cap.read()
+            cv2.imshow("frame", frame)
+
+            if cv2.waitKey(20) & 0xFF == ord("d"):
+                print("done")
+                break
+
 
 if __name__ == "__main__":
     process()
