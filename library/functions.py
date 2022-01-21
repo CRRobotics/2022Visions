@@ -133,9 +133,9 @@ def getParabola(frame, centers):
 
 
 # MATH
-def getVertex(a,b,c):
+def getVertex(a, b, c):
     "y = ax^2+bx+c"
-    return ((-b / (2 * a)), (((4 * a * c) - (b * b)) / (4 * a)))
+    return (int(-b / (2 * a)), int(((4 * a * c) - (b * b)) / (4 * a)))
 
 # gets the angle based on the fov, orientation, and coordinate of the parabola representing the target
 # @param img The image or frame to use

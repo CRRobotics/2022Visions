@@ -15,7 +15,7 @@ while True:
 
     # height, width 
     h, w, c = frame.shape
-    print(h,w)
+    # print(h,w)
 
     # mask (edit magic numbers in HSVFilter)
     mask = functions.HSVFilter(frame)
@@ -53,7 +53,8 @@ while True:
         # for some reason, going up decreases the y value
         # getting vertex
         #plotting vertex
-        vertex = functions.getVertex(a,b,c)
+        vertex = functions.getVertex(a, b, c)
+        print("vertex: ", vertex)
         cv2.circle(frame, vertex, 3, (255, 0, 0), -1)
 
         # mafs        

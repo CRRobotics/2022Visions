@@ -1,13 +1,32 @@
 import cv2
 import numpy as np
+from gripTest import GripPipeline
 import library.constants as constants
 import library.functions as functions
+import os
+import sys
 
+print("imports done")
 cap = cv2.VideoCapture(0)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+print("we out")
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 # runs target tracking
+def process_2():
+    g = GripPipeline()
+    while True:
+        isTrue, frame = cap.read()
+        g.process(frame)
+        cv2.imshow("mask", g.mask_output)
+        cv2.imshow("frame", frame)
+
+        # for testing purposes
+        if cv2.waitKey(20) & 0xFF == ord("d"):
+            print("done")
+            break
+
+
 def process():
     while True:
         try:
@@ -19,7 +38,14 @@ def process():
 
             # finding and filtering the contours in the frame to only get the contour of the tape
             contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-            contours = functions.filterContours(contours, 300.0)
+            # contours = functions.filterContours(contours)
+
+            if len(contours) == 0:
+                cv2.imshow("frame", frame)
+                if cv2.waitKey(20) & 0xFF == ord("d"):
+                    print("done")
+                    break
+                continue
 
             # getting convex hulls
             convexHulls = [cv2.convexHull(contour) for contour in contours]
@@ -41,13 +67,13 @@ def process():
             # getting the centers of the contours in the frame
             centers = functions.getCenters(frame, contours)
 
-            if len(centers) >= 3:
-                vertex = functions.getParabola(frame, centers)
+
+            vertex = functions.getParabola(frame, centers) if len(centers) >= 3 else None
 
 
             # getting and drawing the horizontal and vertical angles
-            horizontalAngle = functions.getAngle(frame, 0, centers[0]) if len(centers) >= 3 else functions.getAngle(frame, 0, vertex)
-            verticalAngle = functions.getAngle(frame, 1, centers[0]) if len(centers) >= 3 else functions.getAngle(frame, 1, vertex)
+            horizontalAngle = functions.getAngle(frame, 0, centers[0]) if vertex is None else functions.getAngle(frame, 0, vertex)
+            verticalAngle = functions.getAngle(frame, 1, centers[0]) if vertex is None else functions.getAngle(frame, 1, vertex)
             cv2.putText(frame, "Horizontal Angle: " + str(horizontalAngle) + "  Vertical Angle: " + str(verticalAngle), \
                 (frame.shape[1] - 700, frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
@@ -71,14 +97,18 @@ def process():
             # STEP 6: DETERMINE VERTICAL/ELEVATION ANGLE TO TARGET (FROM THE ROBOT)
 
             # STEP 7: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
-        except:
-            isTrue, frame = cap.read()
-            cv2.imshow("frame", frame)
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            # isTrue, frame = cap.read()
+            # cv2.imshow("frame", frame)
 
-            if cv2.waitKey(20) & 0xFF == ord("d"):
-                print("done")
-                break
+            # if cv2.waitKey(20) & 0xFF == ord("d"):
+            #     print("done")
+            #     break
 
 
 if __name__ == "__main__":
     process()
+    # process_2()

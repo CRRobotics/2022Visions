@@ -23,10 +23,21 @@ FOV_Y = math.atan((CAMERA_Y / 2) / CAMERA_EXPERIMENTAL_DISTANCE) * 2
 RADIANS_PER_PIXEL_X = FOV_X / 1280
 RADIANS_PER_PIXEL_Y = FOV_Y / 720
 
+# # good values but don't work well when the tape is really bright
+# hue = [0, 180]
+# sat = [73, 255]
+# val = [255, 255]
 
 hue = [0, 180]
-sat = [73, 255]
-val = [255, 255]
+sat = [138, 255]
+val = [171, 255]
+
+# hue = [86, 122]
+# sat = [23, 255]
+# val = [255, 255]
+
+
+
 
 # filter = {"hue": [57, 111], "sat":[148, 255], "val": [255, 255]}
 # hue = [57, 111]
