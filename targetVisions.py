@@ -38,7 +38,7 @@ def process():
 
             # finding and filtering the contours in the frame to only get the contour of the tape
             contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-            # contours = functions.filterContours(contours)
+            contours = functions.filterContours(contours)
 
             if len(contours) == 0:
                 cv2.imshow("frame", frame)
