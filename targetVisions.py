@@ -13,20 +13,6 @@ print("we out")
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 # runs target tracking
-def process_2():
-    g = GripPipeline()
-    while True:
-        isTrue, frame = cap.read()
-        g.process(frame)
-        cv2.imshow("mask", g.mask_output)
-        cv2.imshow("frame", frame)
-
-        # for testing purposes
-        if cv2.waitKey(20) & 0xFF == ord("d"):
-            print("done")
-            break
-
-
 def process():
     while True:
         try:
@@ -107,6 +93,20 @@ def process():
             # if cv2.waitKey(20) & 0xFF == ord("d"):
             #     print("done")
             #     break
+
+
+def process_2():
+    g = GripPipeline()
+    while True:
+        isTrue, frame = cap.read()
+        g.process(frame)
+        cv2.imshow("mask", g.mask_output)
+        cv2.imshow("frame", frame)
+
+        # for testing purposes
+        if cv2.waitKey(20) & 0xFF == ord("d"):
+            print("done")
+            break
 
 
 if __name__ == "__main__":

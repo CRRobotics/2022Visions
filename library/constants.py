@@ -20,14 +20,18 @@ CAMERA_X = 85
 CAMERA_Y = 47
 FOV_X = math.atan((CAMERA_X / 2) / CAMERA_EXPERIMENTAL_DISTANCE) * 2
 FOV_Y = math.atan((CAMERA_Y / 2) / CAMERA_EXPERIMENTAL_DISTANCE) * 2
-RADIANS_PER_PIXEL_X = FOV_X / 1280
-RADIANS_PER_PIXEL_Y = FOV_Y / 720
+# RADIANS_PER_PIXEL_X = FOV_X / 1280
+# RADIANS_PER_PIXEL_Y = FOV_Y / 720
+RADIANS_PER_PIXEL_X = FOV_X / 640
+RADIANS_PER_PIXEL_Y = FOV_Y / 480
 
 # # good values but don't work well when the tape is really bright
 # hue = [0, 180]
 # sat = [73, 255]
 # val = [255, 255]
 
+# best numbers so far
+# use testing/capture.png in grip instead of the webcam video since grip has different exposure for some reason
 hue = [0, 180]
 sat = [138, 255]
 val = [171, 255]
