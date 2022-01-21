@@ -63,7 +63,7 @@ def process():
 
             # displaying the horizontal and vertical angles on the frame
             cv2.putText(frame, "Horizontal Angle: " + str(horizontalAngle) + "  Vertical Angle: " + str(verticalAngle), \
-                (frame.shape[1] - 650, frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                (frame.shape[1] - 600, frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
             # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
             horizontalDistance = functions.getHorizontalDistance(verticalAngle)
