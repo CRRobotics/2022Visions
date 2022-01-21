@@ -104,6 +104,7 @@ def getCenters(img, contours):
     return centres
 
 def getParabola(frame, centers):
+    "draws parabola on frame, returns vertex (x,y)"
     h, w, _ = frame.shape
 
     yVals = [x[1] for x in centers]
@@ -172,7 +173,9 @@ def getAngle(img, orientation:int, coordinate:tuple):
 #    pixelRepresent = fov/(math.sqrt(h**2 + w**2))
 #    return pixelRepresent
 def angleToRadians(degrees):
+    "degrees to radians"
     return degrees*(math.pi / 180)
 
 def angleToDegrees(radians):
+    "radians to degrees"
     return (radians / math.pi) * 180
