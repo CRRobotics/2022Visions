@@ -54,16 +54,24 @@ def process():
             # getting the centers of the contours in the frame
             centers = functions.getCenters(frame, convexHulls)
 
-
+            # STEP 2: DETERMINE THE PARABOLIC FIT WITH LEAST SQUARES USING THE CENTER COORDINATES OF THE TAPE
             vertex = functions.getParabola(frame, centers) if len(centers) >= 3 else None
 
+            # STEP 3: DETERMINE HORIZONTAL AND VERTICAL ANGLES TO TARGET (FROM THE ROBOT)
+            horizontalAngle = functions.getAngle(frame, 0, vertex) if vertex is not None else functions.getAngle(frame, 0, centers[0])
+            verticalAngle = functions.getAngle(frame, 1, vertex) if vertex is not None else functions.getAngle(frame, 1, centers[0])
 
-            # getting and drawing the horizontal and vertical angles
-            horizontalAngle = functions.getAngle(frame, 0, centers[0]) if vertex is None else functions.getAngle(frame, 0, vertex)
-            verticalAngle = functions.getAngle(frame, 1, centers[0]) if vertex is None else functions.getAngle(frame, 1, vertex)
+            # displaying the horizontal and vertical angles on the frame
             cv2.putText(frame, "Horizontal Angle: " + str(horizontalAngle) + "  Vertical Angle: " + str(verticalAngle), \
-                (frame.shape[1] - 700, frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                (frame.shape[1] - 650, frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
+            # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
+            horizontalDistance = functions.getHorizontalDistance(verticalAngle)
+
+            # displaying the horizontal distance to the target on the frame
+            cv2.putText(frame, "Distance: " + str(horizontalDistance), \
+                (frame.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            
             # displaying the frame with the convex hull of the tape
             cv2.imshow("mask", mask)
             cv2.imshow("frame", frame)
@@ -73,17 +81,6 @@ def process():
                 print("done")
                 break
 
-            # STEP 2: DETERMINE THE PARABOLIC FIT WITH LEAST SQUARES USING THE CENTER COORDINATES OF THE TAPE
-
-            # STEP 3: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE CENTER OF THE FRAME)
-
-            # STEP 4: DETERMINE EITHER DISTANCE OR HORIZONTAL ANGLE TO TARGET? (FROM THE ROBOT)
-
-            # STEP 5: DETERMINE EITHER DISTANCE OR HORIZONTAL ANGEL TO TARGET? (FROM THE ROBOT)
-
-            # STEP 6: DETERMINE VERTICAL/ELEVATION ANGLE TO TARGET (FROM THE ROBOT)
-
-            # STEP 7: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
         except Exception as e:
             cv2.imshow("frame", frame)
             cv2.imshow("mask", mask)
