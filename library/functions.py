@@ -8,36 +8,6 @@ if __name__ == "__main__":
 else:
     import library.constants as constants
 
-
-
-#def center(img, coordinate):
-#    h, w, c = img.shape
-#
-#
-#    y = img[1]
-#    x = img[0]
-#    Offset = int(w/10)
-#
-    #yRange = range(h/2-Offset, h/2+Offset)
-    #xRange = range(w/2-Offset, w/2+Offset)
-
-#    toReturn = {
-#        "y":"centered",
-#        "x":"centered"
-#    }
-
-#    if y < h/2-Offset:
-#        toReturn["y"] = "up"
-#    elif y > h/2 + Offset:
-#        toReturn["y"] = "down"
-#
-#    if x < w/2-Offset:
-#        toReturn["x"] = "right"
-#    elif x > w/2 + Offset:
-#        toReturn["x"] = "left"
-#    
-#    return toReturn
-
 # HELPER FUNCTIONS
 def HSVFilter(frame):
     "returns filtered img"
@@ -55,6 +25,7 @@ def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR):
         tempCounters.append(contour)
     return tempCounters
 
+'''
 def get_leftmost_and_rightmost_coords(img, convex_hulls:list):
     "returns leftmost and rightmost coords in convex hull"
     h, w, c = img.shape
@@ -72,26 +43,7 @@ def get_leftmost_and_rightmost_coords(img, convex_hulls:list):
             maxX = (cx, cy)
 
     return [minX,maxX]
-    
-def Center(img, leftMostCoordinate, rightMostCoordinate):
-    "tells if camera is centered. *we arent gon use this lmao"
-    h, w, c = img.shape
-    xLeft = leftMostCoordinate[0]
-
-    xRight = rightMostCoordinate[0]
-    Offset = int(w/9)
-
-    distanceFromSideL = w - xRight - Offset
-    distanceFromSideR = w - xRight + Offset
-
-    # 1 == go right
-    # -1 == go left
-    # 0 == centered
-    if xLeft < distanceFromSideL:
-        return 1
-    elif xLeft > distanceFromSideR:
-        return -1
-    return 0
+'''
 
 def getCenters(img, contours):
     """_, contours, _ = cv2.findContours 
