@@ -13,7 +13,7 @@ INNER_TARGET_DEPTH      = 29.25
 BALL_RADIUS             = 3.5
 
 # THIS VALUE HAS BEEN DETERMINED BY CLOSE-TESTING, CAHNGE THESE VALUES LATER
-MIN_AREA_CONTOUR        = 250.0
+MIN_AREA_CONTOUR        = 50.0
 
 CAMERA_EXPERIMENTAL_DISTANCE = 92
 CAMERA_X = 85
@@ -32,7 +32,8 @@ RADIANS_PER_PIXEL_Y = FOV_Y / 480
 
 # best numbers so far
 # use testing/capture.png in grip instead of the webcam video since grip has different exposure for some reason
-hue = [0, 180]
+# hue = [0, 180]
+hue = [71, 103]
 sat = [138, 255]
 val = [171, 255]
 

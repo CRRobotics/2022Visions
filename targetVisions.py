@@ -28,6 +28,7 @@ def process():
 
             if len(contours) == 0:
                 cv2.imshow("frame", frame)
+                cv2.imshow("mask", mask)
                 if cv2.waitKey(20) & 0xFF == ord("d"):
                     print("done")
                     break
@@ -51,7 +52,7 @@ def process():
             cv2.drawContours(frame, convexHulls, -1, (0, 0, 255), 1)
 
             # getting the centers of the contours in the frame
-            centers = functions.getCenters(frame, contours)
+            centers = functions.getCenters(frame, convexHulls)
 
 
             vertex = functions.getParabola(frame, centers) if len(centers) >= 3 else None
@@ -84,6 +85,8 @@ def process():
 
             # STEP 7: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
         except Exception as e:
+            cv2.imshow("frame", frame)
+            cv2.imshow("mask", mask)
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)

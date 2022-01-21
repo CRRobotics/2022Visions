@@ -17,13 +17,15 @@ def HSVFilter(frame):
 
 def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR):
     "filters out contours that are smaller than min_size"
-    tempCounters = []
-    for contour in contours:
-        area = cv2.contourArea(contour)
+    filteredContours = []
+    numContours = 4 if len(contours) > 4 else len(contours)
+    sortedContours = sorted(contours, key=lambda contour: -cv2.contourArea(contour))
+    for i in range(numContours):
+        area = cv2.contourArea(sortedContours[i])
         if area < min_size:
-            continue
-        tempCounters.append(contour)
-    return tempCounters
+            break
+        filteredContours.append(sortedContours[i])
+    return filteredContours
 
 '''
 def get_leftmost_and_rightmost_coords(img, convex_hulls:list):
@@ -48,12 +50,12 @@ def get_leftmost_and_rightmost_coords(img, convex_hulls:list):
 def getCenters(img, contours):
     """_, contours, _ = cv2.findContours 
     returns centers of all polygons"""
-    centres = []
+    centers = []
     for i in range(len(contours)):
         moments = cv2.moments(contours[i])
-        centres.append((int(moments['m10']/moments['m00']), int(moments['m01']/moments['m00'])))
-        cv2.circle(img, centres[-1], 3, (0, 0, 0), -1)
-    return centres
+        centers.append((int(moments['m10']/moments['m00']), int(moments['m01']/moments['m00'])))
+        cv2.circle(img, centers[-1], 3, (0, 0, 0), -1)
+    return centers
 
 def getParabola(frame, centers):
     "draws parabola on frame, returns vertex (x,y)"
