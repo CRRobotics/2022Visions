@@ -30,6 +30,9 @@ RADIANS_PER_PIXEL_Y = FOV_Y / 480
 # sat = [138, 255]
 # val = [171, 255]
 
+
+
+#these capture the outside as well.
 hue = [73, 103]
 sat = [73, 255]
 val = [228, 255]
