@@ -19,6 +19,7 @@ def process():
             # STEP 1: IDENTIFY THE TARGET
             isTrue, frame = cap.read()
             cv2.imshow("frame2", frame)
+            
             # getting HSV filter to distinguish the target from surroundings
             mask = functions.HSVFilter(frame)
 
@@ -51,7 +52,7 @@ def process():
             cv2.drawContours(frame, convexHulls, -1, (0, 0, 255), 1)
 
             # getting the centers of the contours in the frame
-            centers = functions.getCenters(frame, contours)
+            centers = functions.getCenters(frame, convexHulls)
 
             # STEP 2: DETERMINE THE PARABOLIC FIT WITH LEAST SQUARES USING THE CENTER COORDINATES OF THE TAPE
             vertex = functions.getParabola(frame, centers) if len(centers) >= 3 else None
