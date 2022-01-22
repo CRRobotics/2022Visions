@@ -79,13 +79,13 @@ def getParabola(frame, centers):
     # drawing parabola
     newXY = list(zip(xVals, fit_equation))
     ctr = np.array(newXY).reshape((-1,1,2)).astype(np.int32)
-    cv2.drawContours(frame, [ctr], -1, (255,0,0), 1)
+    cv2.drawContours(frame, [ctr], -1, (255, 0, 0), 1)
 
     # for some reason, going up decreases the y value
     # getting vertex
     #plotting vertex
     vertex = getVertex(a,b,c)
-    cv2.circle(frame, vertex, 3, (255, 0, 0), -1)
+    cv2.circle(frame, vertex, 3, (0, 0, 255), -1)
     return vertex
 
 

@@ -18,7 +18,7 @@ def process():
         try:
             # STEP 1: IDENTIFY THE TARGET
             isTrue, frame = cap.read()
-
+            cv2.imshow("frame2", frame)
             # getting HSV filter to distinguish the target from surroundings
             mask = functions.HSVFilter(frame)
 
