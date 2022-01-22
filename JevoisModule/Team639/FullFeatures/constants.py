@@ -24,18 +24,17 @@ FOV_Y = math.atan((CAMERA_Y / 2) / CAMERA_EXPERIMENTAL_DISTANCE) * 2
 RADIANS_PER_PIXEL_X = FOV_X / 640
 RADIANS_PER_PIXEL_Y = FOV_Y / 480
 
-# best numbers so far
+# good values but don't work as well when the tape is directly under very bright light
 # use testing/capture.png in grip instead of the webcam video since grip has different exposure for some reason
 # hue = [71, 103]
 # sat = [138, 255]
 # val = [171, 255]
 
-
-
-#these capture the outside as well.
+# best values so far
 hue = [73, 103]
 sat = [73, 255]
 val = [228, 255]
+
 
 
 

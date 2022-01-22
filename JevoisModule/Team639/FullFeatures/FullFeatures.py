@@ -1,4 +1,3 @@
-from turtle import distance
 import libjevois as jevois
 import cv2
 import numpy as np
@@ -21,7 +20,7 @@ import functions
 # @distribution Unrestricted
 # @restrictions None
 # @ingroup modules
-class FullFeater:
+class FullFeatures:
     # ###################################################################################################
     ## Constructor
     def __init__(self):
@@ -56,6 +55,7 @@ class FullFeater:
     # ###################################################################################################
     ## Process function with USB output
     def process(self, inframe, outframe):
+        print("inframe type is "+type(inframe))
         # Get the next camera image (may block until it is captured) and here convert it to OpenCV BGR. If you need a
         # grayscale image, just use getCvGRAY() instead of getCvBGR(). Also supported are getCvRGB() and getCvRGBA():
         inimg = inframe.getCvBGR()
