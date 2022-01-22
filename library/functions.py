@@ -1,10 +1,6 @@
 import math
 import cv2
 import numpy as np
-from re import X
-# from tkinter import HORIZONTAL, W
-
-from library.constants import HEIGHT_TO_TARGET
 if __name__ == "__main__":
     import constants
 else:
@@ -124,7 +120,7 @@ def getAngle(img, orientation:int, coordinate:tuple):
     # return int(pixelRepresent * distanceFromCenter)
 
 # determines the horizontal distance to the target based on the angle and height of the target relative to the robot
-def getHorizontalDistance(angle, degrees=True, heightToTarget=HEIGHT_TO_TARGET):
+def getHorizontalDistance(angle, degrees=True, heightToTarget=constants.HEIGHT_TO_TARGET):
     return heightToTarget / math.tan(angleToRadians(angle)) if degrees else heightToTarget / math.tan(angle)
 
 #def getPixelRepresent(img, pixel):
