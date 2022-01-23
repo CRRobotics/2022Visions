@@ -26,6 +26,8 @@ RADIANS_PER_PIXEL_Y = FOV_Y / 480
 
 
 # LOGITECH 310
+
+# values for E4
 # good values but don't work as well when the tape is directly under very bright light
 # use testing/capture.png in grip instead of the webcam video since grip has different exposure for some reason
 # hue = [71, 103]
@@ -37,6 +39,8 @@ RADIANS_PER_PIXEL_Y = FOV_Y / 480
 # sat = [73, 255]
 # val = [228, 255]
 
+
+# values for cafeteria
 hue = [70, 94]
 sat = [128, 255]
 val = [228, 255]
