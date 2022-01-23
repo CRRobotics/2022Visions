@@ -31,9 +31,15 @@ RADIANS_PER_PIXEL_Y = FOV_Y / 480
 # val = [171, 255]
 
 # best values so far
-hue = [73, 103]
-sat = [73, 255]
+# hue = [73, 103]
+# sat = [73, 255]
+# val = [228, 255]
+
+hue = [70, 94]
+sat = [128, 255]
 val = [228, 255]
+
+
 
 
 

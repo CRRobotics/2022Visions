@@ -20,7 +20,7 @@ import functions
 # @distribution Unrestricted
 # @restrictions None
 # @ingroup modules
-class FullFeatures:
+class BetterFullFeatures:
     # ###################################################################################################
     ## Constructor
     def __init__(self):

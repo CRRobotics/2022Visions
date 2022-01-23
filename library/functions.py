@@ -19,9 +19,9 @@ def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR):
     numContours = 4 if len(contours) > 4 else len(contours)
     sortedContours = sorted(contours, key=lambda contour: -cv2.contourArea(contour))
     for i in range(numContours):
-        area = cv2.contourArea(sortedContours[i])
-        if area < min_size:
-            break
+        # area = cv2.contourArea(sortedContours[i])
+        # if area < min_size:
+        #     break
         filteredContours.append(sortedContours[i])
     return filteredContours
 
