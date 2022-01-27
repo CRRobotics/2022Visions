@@ -4,7 +4,7 @@ import json
 import library.functions as functions
 
 # Grip Filters
-FILE_NAME = "library/filter.json"
+FILE_NAME = "filter.json"
 CAM_ID = 0
 
 # "exposure": 10

@@ -2,13 +2,18 @@ import math
 import cv2
 import numpy as np
 import constants
+import sliders
 
 
 # HELPER FUNCTIONS
 def HSVFilter(frame):
     "returns filtered img"
+    filter = sliders.getFilter()
+    hue = filter["hue"]
+    val = filter["val"]
+    sat = filter["sat"]
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    mask = cv2.inRange(hsv, (constants.hue[0], constants.sat[0], constants.val[0]), (constants.hue[1], constants.sat[1], constants.val[1]))
+    mask = cv2.inRange(hsv, (hue[0], sat[0], val[0]), (hue[1], sat[1], val[1]))
     return mask
 
 def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR):

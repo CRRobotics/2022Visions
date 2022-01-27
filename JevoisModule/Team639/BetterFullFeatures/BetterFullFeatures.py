@@ -1,4 +1,4 @@
-import libjevois as jevois
+import libjevois as jevois # type: ignore
 import cv2
 import numpy as np
 import functions
@@ -79,7 +79,7 @@ class BetterFullFeatures:
         contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         contours = functions.filterContours(contours)
 
-        if len(contours) != 0:
+        if len(contours) > 0:
 
             # getting convex hulls
             convexHulls = [cv2.convexHull(contour) for contour in contours]

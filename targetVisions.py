@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from gripTest import GripPipeline
+from testing.gripTest import GripPipeline
 import library.constants as constants
 import library.functions as functions
 import os
