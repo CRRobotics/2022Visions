@@ -20,7 +20,7 @@ import json
 # @distribution Unrestricted
 # @restrictions None
 # @ingroup modules
-class BetterFullFeatures:
+class BetterFullFeaturesLowerResolution:
     # ###################################################################################################
     ## Constructor
     def __init__(self):
@@ -129,7 +129,7 @@ class BetterFullFeatures:
 
             jevois.sendSerial(jsonData)
 
-        
+
             
         # displaying the inframe with the convex hull of the tape
         # cv2.imshow("mask", mask)
