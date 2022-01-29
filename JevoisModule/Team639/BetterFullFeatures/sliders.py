@@ -1,7 +1,7 @@
 import cv2
 import os
 import json
-import library.functions as functions
+import functions
 
 # Grip Filters
 FILE_NAME = "filter.json"
