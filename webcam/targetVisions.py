@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
-from testing.gripTest import GripPipeline
 import library.constants as constants
 import library.functions as functions
 import os
 import sys
+# from testing.gripTest import GripPipeline
 
 print("imports done")
 cap = cv2.VideoCapture(0)
@@ -93,18 +93,18 @@ def process():
             #     break
 
 
-def process_2():
-    g = GripPipeline()
-    while True:
-        isTrue, frame = cap.read()
-        g.process(frame)
-        cv2.imshow("mask", g.mask_output)
-        cv2.imshow("frame", frame)
+# def process_2():
+#     g = GripPipeline()
+#     while True:
+#         isTrue, frame = cap.read()
+#         g.process(frame)
+#         cv2.imshow("mask", g.mask_output)
+#         cv2.imshow("frame", frame)
 
-        # for testing purposes
-        if cv2.waitKey(20) & 0xFF == ord("d"):
-            print("done")
-            break
+#         # for testing purposes
+#         if cv2.waitKey(20) & 0xFF == ord("d"):
+#             print("done")
+#             break
 
 
 if __name__ == "__main__":
