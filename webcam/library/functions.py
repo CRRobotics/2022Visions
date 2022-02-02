@@ -91,9 +91,8 @@ def getVertex(a, b, c):
     return (int(-b / (2 * a)), int(((4 * a * c) - (b * b)) / (4 * a)))
 
 # converts the horizontal angle relative to the optical axis to the horizontal angle relative to the ground
-# to be implemented
 def opticalToGround(angle):
-    return
+    return math.atan((1 / math.cos(constants.CAMERA_ANGLE)) * math.tan(angle))
 
 # gets the angle based on the fov, orientation, and coordinate of the parabola representing the target
 # @param img The image or frame to use

@@ -108,6 +108,7 @@ class BetterFullFeatures:
 
             # STEP 3: DETERMINE HORIZONTAL AND VERTICAL ANGLES TO TARGET (FROM THE ROBOT)
             horizontalAngle = functions.getAngle(inframe, 0, vertex) if vertex is not None else functions.getAngle(inframe, 0, centers[0])
+            horizontalAngle = functions.opticalToGround(horizontalAngle)
             verticalAngle = functions.getAngle(inframe, 1, vertex) if vertex is not None else functions.getAngle(inframe, 1, centers[0])
 
             # displaying the horizontal and vertical angles on the inframe
