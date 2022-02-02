@@ -100,7 +100,9 @@ class BetterFullFeatures:
 
             # getting the centers of the contours in the inframe
             centers = functions.getCenters(inframe, convexHulls)
-
+            h, w, c = inframe.shape
+            centerPixel = (int(w / 2), int(h / 2))
+            inframe = cv2.circle(inframe, centerPixel, 3, (255, 0, 255), -1)
             # STEP 2: DETERMINE THE PARABOLIC FIT WITH LEAST SQUARES USING THE CENTER COORDINATES OF THE TAPE
             vertex = functions.getParabola(inframe, centers) if len(centers) >= 3 else None
 
@@ -129,7 +131,7 @@ class BetterFullFeatures:
 
             jevois.sendSerial(jsonData)
 
-        
+
             
         # displaying the inframe with the convex hull of the tape
         # cv2.imshow("mask", mask)

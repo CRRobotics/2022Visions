@@ -70,6 +70,7 @@ def startSliders():
 
 
 def getFilter():
+    loadParameters()
     return filter
 
 
