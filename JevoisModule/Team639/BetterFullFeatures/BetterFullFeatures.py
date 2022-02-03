@@ -106,27 +106,29 @@ class BetterFullFeatures:
             # STEP 2: DETERMINE THE PARABOLIC FIT WITH LEAST SQUARES USING THE CENTER COORDINATES OF THE TAPE
             vertex = functions.getParabola(inframe, centers) if len(centers) >= 3 else None
 
-            # STEP 3: DETERMINE HORIZONTAL AND VERTICAL ANGLES TO TARGET (FROM THE ROBOT)
-            horizontalAngle = functions.getAngle(inframe, 0, vertex) if vertex is not None else functions.getAngle(inframe, 0, centers[0])
-            horizontalAngle = functions.opticalToGround(horizontalAngle)
-            verticalAngle = functions.getAngle(inframe, 1, vertex) if vertex is not None else functions.getAngle(inframe, 1, centers[0])
+             # STEP 3: DETERMINE HORIZONTAL AND VERTICAL ANGLES TO TARGET (FROM THE ROBOT)
+            opticalHorizontalAngle = functions.getAngle(inframe, 0, vertex) if vertex is not None else functions.getAngle(inframe, 0, centers[0])
+            groundHorizontalAngle = functions.horizontalOpticalToGround(opticalHorizontalAngle)
+            opticalVerticalAngle = functions.getAngle(inframe, 1, vertex) if vertex is not None else functions.getAngle(inframe, 1, centers[0])
+            groundVerticalAngle = functions.verticalOpticalToGround(opticalHorizontalAngle, opticalVerticalAngle)
 
-            # displaying the horizontal and vertical angles on the inframe
-            cv2.putText(inframe, "Horizontal Angle: " + str(horizontalAngle) + "  Vertical Angle: " + str(verticalAngle), \
+            # displaying the horizontal and vertical angles on the frame
+            cv2.putText(inframe, "Horizontal Angle: " + str(groundHorizontalAngle) + "  Vertical Angle: " + str(groundVerticalAngle), \
                 (inframe.shape[1] - 600, inframe.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
             # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
-            horizontalDistance = functions.getHorizontalDistance(verticalAngle)
+            horizontalDistance = functions.getHorizontalDistance(groundVerticalAngle)
 
-            # displaying the horizontal distance to the target on the inframe
+
+            # displaying the horizontal distance to the target on the frame
             cv2.putText(inframe, "Distance: " + str(horizontalDistance), \
                 (inframe.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             outframe.sendCv(inframe)
 
             # Example of sending some serial output message:
             data = {
-                "horizontalDistance":horizontalDistance,
-                "horizontalAngle":horizontalAngle
+                "horizontalDistance": horizontalDistance,
+                "horizontalAngle": groundHorizontalAngle
             }
             jsonData = json.dumps(data)
 

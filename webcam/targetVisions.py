@@ -58,16 +58,17 @@ def process():
             vertex = functions.getParabola(frame, centers) if len(centers) >= 3 else None
 
             # STEP 3: DETERMINE HORIZONTAL AND VERTICAL ANGLES TO TARGET (FROM THE ROBOT)
-            horizontalAngle = functions.getAngle(frame, 0, vertex) if vertex is not None else functions.getAngle(frame, 0, centers[0])
-            horizontalAngle = functions.opticalToGround(horizontalAngle)
-            verticalAngle = functions.getAngle(frame, 1, vertex) if vertex is not None else functions.getAngle(frame, 1, centers[0])
+            opticalHorizontalAngle = functions.getAngle(frame, 0, vertex) if vertex is not None else functions.getAngle(frame, 0, centers[0])
+            groundHorizontalAngle = functions.horizontalOpticalToGround(opticalHorizontalAngle)
+            opticalVerticalAngle = functions.getAngle(frame, 1, vertex) if vertex is not None else functions.getAngle(frame, 1, centers[0])
+            groundVerticalAngle = functions.verticalOpticalToGround(opticalHorizontalAngle, opticalVerticalAngle)
 
             # displaying the horizontal and vertical angles on the frame
-            cv2.putText(frame, "Horizontal Angle: " + str(horizontalAngle) + "  Vertical Angle: " + str(verticalAngle), \
+            cv2.putText(frame, "Horizontal Angle: " + str(groundHorizontalAngle) + "  Vertical Angle: " + str(groundVerticalAngle), \
                 (frame.shape[1] - 600, frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
             # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
-            horizontalDistance = functions.getHorizontalDistance(verticalAngle)
+            horizontalDistance = functions.getHorizontalDistance(groundVerticalAngle)
 
             # displaying the horizontal distance to the target on the frame
             cv2.putText(frame, "Distance: " + str(horizontalDistance), \

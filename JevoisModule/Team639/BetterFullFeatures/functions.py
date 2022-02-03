@@ -97,6 +97,11 @@ def getVertex(a, b, c):
 def opticalToGround(angle):
     return math.atan((1 / math.cos(constants.CAMERA_ANGLE)) * math.tan(angle))
 
+# converts the vertical angle relative to the optical axis to the vertical angle relative to the ground
+def verticalOpticalToGround(opticalHorizontalAngle, opticalVerticalAngle):
+    return math.asin(math.cos(constants.CAMERA_ANGLE) * math.sin(opticalVerticalAngle) + \
+        math.cos(opticalHorizontalAngle) * math.cos(opticalVerticalAngle) * math.sin(constants.CAMERA_ANGLE))
+
 # gets the angle based on the fov, orientation, and coordinate of the parabola representing the target
 # @param img The image or frame to use
 # @param orientation The orientation of the angle (0 gets horizontal angle to the coordinate, 1 gets vertical angle to the tape)
