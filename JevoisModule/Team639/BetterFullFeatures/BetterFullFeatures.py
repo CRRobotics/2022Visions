@@ -44,33 +44,27 @@ class BetterFullFeatures:
 
         self.blueBallAngle = -1
         self.blueBallDistance = -1  
+        jevois.sendSerial("Constructor called")
+        jevois.LINFO("Constructor logging info")
 
 
     # ###################################################################################################
     ## Process function with no USB output
     def processNoUSB(self, inframe):
-        # Get the next camera image (may block until it is captured) and here convert it to OpenCV BGR. If you need a
-        # grayscale image, just use getCvGRAY() instead of getCvBGR(). Also supported are getCvRGB() and getCvRGBA():
-        inimg = inframe.getCvBGR()
-
-        # Start measuring image processing time (NOTE: does not account for input conversion time):
-        self.timer.start()
-        
-        jevois.LINFO("Processing video frame {} now...".format(self.frame))
-
-        # TODO: you should implement some processing.
-        # Once you have some results, send serial output messages:
-
-        # Get frames/s info from our timer:
-        fps = self.timer.stop()
-
-        # Send a serial output message:
-        jevois.sendSerial("DONE frame {} - {}".format(self.frame, fps));
-        self.frame += 1
+        jevois.LINFO("BEGUN PROCESSNOUSB pipeline")
+        jevois.sendSerial("BEGUN PROCESSNOUSB PIPELINE (THIS IS A SERIAL GENE)")
+        self.commonProcess(inframe=inframe)
         
     # ###################################################################################################
     ## Process function with USB output
     def process(self, inframe, outframe):
+        jevois.LINFO("BEGUN PROCESS pipeline")
+        jevois.sendSerial("BEGUN PROCESS PIPELINE (THIS IS A SERIAL GENE)")
+        self.commonProcess(inframe=inframe, outframe=outframe)
+        
+
+
+    def commonProcess(self, inframe, outframe = None):
         jevois.LINFO("inframe type is "+str(type(inframe)))
         # Get the next camera image (may block until it is captured) and here convert it to OpenCV BGR. If you need a
         # grayscale image, just use getCvGRAY() instead of getCvBGR(). Also supported are getCvRGB() and getCvRGBA():
@@ -79,17 +73,6 @@ class BetterFullFeatures:
         # Start measuring image processing time (NOTE: does not account for input conversion time):
         self.timer.start()
         pipline_start_time = datetime.now()
-    
-
-
-
-
-
-        # STEP 1: IDENTIFY THE TARGET
-        # isTrue, frame = cap.read()
-        # cv2.imshow("frame2", frame)
-        
-        # getting HSV filter to distinguish the target from surroundings
         mask = functions.HSVFilter(inframe)
 
         # finding and filtering the contours in the inframe to only get the contour of the tape
@@ -123,8 +106,7 @@ class BetterFullFeatures:
 
             # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
             horizontalDistance = functions.getHorizontalDistance(groundVerticalAngle)
-
-
+            
             # displaying the horizontal distance to the target on the frame
             cv2.putText(inframe, "Distance: " + str(horizontalDistance), \
                 (inframe.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
@@ -134,8 +116,8 @@ class BetterFullFeatures:
             self.groundHorizontalAngle = -1
             self.horizontalDistance = -1
 
-
-        outframe.sendCv(inframe)
+        if outframe:
+            outframe.sendCv(inframe)
 
         pipeline_end_time = datetime.now() - pipline_start_time
         self.pipelineDelay_us = pipeline_end_time.microseconds
@@ -157,7 +139,8 @@ class BetterFullFeatures:
         jevois.sendSerial(data)
         # Write frames/s info from our timer into the edge map (NOTE: does not account for output conversion time):
         self.frame += 1
-        
+
+
     # ###################################################################################################
     ## Parse a serial command forwarded to us by the JeVois Engine, return a string
     def parseSerial(self, str):
