@@ -97,6 +97,10 @@ def getVertex(a, b, c):
 def opticalToGround(angle):
     return math.atan((1 / math.cos(constants.CAMERA_ANGLE)) * math.tan(angle))
 
+    
+def horizontalOpticalToGround(angle):
+    return math.atan((1 / math.cos(constants.CAMERA_ANGLE)) * math.tan(angle))
+
 # converts the vertical angle relative to the optical axis to the vertical angle relative to the ground
 def verticalOpticalToGround(opticalHorizontalAngle, opticalVerticalAngle):
     return math.asin(math.cos(constants.CAMERA_ANGLE) * math.sin(opticalVerticalAngle) + \
@@ -147,3 +151,31 @@ def angleToRadians(degrees):
 def angleToDegrees(radians):
     "radians to degrees"
     return (radians / math.pi) * 180
+
+
+def findChecksum(SentMessage, k = 2):
+    """Returns checksum for json msg"""
+    # Dividing sent message in packets of k bits.
+    c1 = SentMessage[0:k]
+    c2 = SentMessage[k:2*k]
+    c3 = SentMessage[2*k:3*k]
+    c4 = SentMessage[3*k:4*k]
+ 
+    # Calculating the binary sum of packets
+    Sum = bin(int(c1, 2)+int(c2, 2)+int(c3, 2)+int(c4, 2))[2:]
+ 
+    # Adding the overflow bits
+    if(len(Sum) > k):
+        x = len(Sum)-k
+        Sum = bin(int(Sum[0:x], 2)+int(Sum[x:], 2))[2:]
+    if(len(Sum) < k):
+        Sum = '0'*(k-len(Sum))+Sum
+ 
+    # Calculating the complement of sum
+    Checksum = ''
+    for i in Sum:
+        if(i == '1'):
+            Checksum += '0'
+        else:
+            Checksum += '1'
+    return Checksum

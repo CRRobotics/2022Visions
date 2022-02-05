@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 import functions
 import json
+from datetime import datetime
+import re
 ## creator
 #
 # Add some description of your module here.
@@ -26,10 +28,24 @@ class BetterFullFeatures:
     def __init__(self):
         # Instantiate a JeVois Timer to measure our processing framerate:
         self.timer = jevois.Timer("processing timer", 100, jevois.LOG_INFO)
-        
+        self.pattern = re.compile('([0-9]*\.[0-9]+|[0-9]+) fps, ([0-9]*\.[0-9]+|[0-9]+)% CPU, ([0-9]*\.[0-9]+|[0-9]+)C,')
         # a simple frame counter used to demonstrate sendSerial():
         self.frame = 0
-        
+        self.framerate_fps = "0"
+        self.CPULoad_pct = "0"
+        self.CPUTemp_C = "0"
+        self.pipelineDelay_us = "0"
+
+        self.groundHorizontalAngle = -1
+        self.horizontalDistance = -1
+
+        self.redBallAngle = -1
+        self.redBallDistance = -1
+
+        self.blueBallAngle = -1
+        self.blueBallDistance = -1  
+
+
     # ###################################################################################################
     ## Process function with no USB output
     def processNoUSB(self, inframe):
@@ -62,6 +78,7 @@ class BetterFullFeatures:
         
         # Start measuring image processing time (NOTE: does not account for input conversion time):
         self.timer.start()
+        pipline_start_time = datetime.now()
     
 
 
@@ -83,18 +100,6 @@ class BetterFullFeatures:
 
             # getting convex hulls
             convexHulls = [cv2.convexHull(contour) for contour in contours]
-            
-            # if convexHulls:
-            #     print("\n\n\n")
-            #     cx = convexHulls[0].tolist()
-            #     coordsOfConvexHulls = [x[0] for x in cx] #[[x1,y1], [x2,y2],[x3,y3],...]
-            #     #im having a stroke trying to get a list of (x,y) coordinates
-            #     c = functions.get_leftmost_and_rightmost_coords(inframe, coordsOfConvexHulls)
-            #     if c:
-            #         print(functions.Center(inframe, c[0],c[1]))
-            #     #action = functions.Center(inframe, c[0], c[1])
-            #     #print(action)
-            
             # drawing convexHulls on the inframe to display
             cv2.drawContours(inframe, convexHulls, -1, (0, 0, 255), 1)
 
@@ -123,67 +128,34 @@ class BetterFullFeatures:
             # displaying the horizontal distance to the target on the frame
             cv2.putText(inframe, "Distance: " + str(horizontalDistance), \
                 (inframe.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-            outframe.sendCv(inframe)
-
-            # Example of sending some serial output message:
-            data = {
-                "horizontalDistance": horizontalDistance,
-                "horizontalAngle": groundHorizontalAngle
-            }
-            jsonData = json.dumps(data)
-
-            jevois.sendSerial(jsonData)
-
-
-            
-        # displaying the inframe with the convex hull of the tape
-        # cv2.imshow("mask", mask)
-        # cv2.imshow("inframe", inframe)
-
-        # for testing purposes
-
-
-
-        # Detect edges using the Laplacian algorithm from OpenCV:
-        #
-        # Replace the line below by your own code! See for example
-        # - http://docs.opencv.org/trunk/d4/d13/tutorial_py_filtering.html
-        # - http://docs.opencv.org/trunk/d9/d61/tutorial_py_morphological_ops.html
-        # - http://docs.opencv.org/trunk/d5/d0f/tutorial_py_gradients.html
-        # - http://docs.opencv.org/trunk/d7/d4d/tutorial_py_thresholding.html
-        #
-        # and so on. When they do "img = cv2.imread('name.jpg', 0)" in these tutorials, the last 0 means they want a
-        # gray image, so you should use getCvGRAY() above in these cases. When they do not specify a final 0 in imread()
-        # then usually they assume color and you should use getCvBGR() above.
-        #
-        # The simplest you could try is:
-        #    outimg = inimg
-        # which will make a simple copy of the input image to output.
-
-
-
-
-
-
-
-
-        #outimg = cv2.Laplacian(inimg, -1, ksize=5, scale=0.25, delta=127)
-        
-        # Write a title:
-        #cv2.putText(outimg, "JeVois FullFeater", (3, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255))
-        
-        # Write frames/s info from our timer into the edge map (NOTE: does not account for output conversion time):
+            self.groundHorizontalAngle = groundHorizontalAngle
+            self.horizontalDistance = horizontalDistance
         else:
-            fps = self.timer.stop()
-            height = inframe.shape[0]
-            width = inframe.shape[1]
-            cv2.putText(inframe, fps, (3, height - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255))
-        
-            # Convert our output image to video output format and send to host over USB:
-            outframe.sendCv(inframe)
+            self.groundHorizontalAngle = -1
+            self.horizontalDistance = -1
 
-            # Example of sending some serial output message:
-            jevois.sendSerial(f"DONE frame {self.frame}")
+
+        outframe.sendCv(inframe)
+
+        pipeline_end_time = datetime.now() - pipline_start_time
+        self.pipelineDelay_us = pipeline_end_time.microseconds
+        results = self.pattern.match(self.timer.stop())
+        if(results is not None):
+            self.framerate_fps = results.group(1)
+            self.CPULoad_pct = results.group(2)
+            self.CPUTemp_C = results.group(3)
+
+    
+        # Example of sending some serial output message:
+        data = "{ %g %.1f %.3f  %.1f %.3f %.1f %.3f %s %s %s %s }"%(
+            self.frame,
+            self.groundHorizontalAngle, self.horizontalDistance,
+            15.6, 6.78,
+            15.6, 6.78,
+            self.framerate_fps,self.CPULoad_pct,self.CPUTemp_C,self.pipelineDelay_us
+        )
+        jevois.sendSerial(data)
+        # Write frames/s info from our timer into the edge map (NOTE: does not account for output conversion time):
         self.frame += 1
         
     # ###################################################################################################
