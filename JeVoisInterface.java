@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.networktables.NetworkTable;
 
 
-public class JeVoisInterface {
-    
+public class JeVoisInterface 
+{
     // Serial Port Constants 
     private static final int BAUD_RATE = 38400;
     
@@ -85,18 +85,22 @@ public class JeVoisInterface {
      * then fires up the user's program and begins listening for target info packets in the background.
      * Pass TRUE to additionaly enable a USB camera stream of what the vision camera is seeing.
      */
-    public JeVoisInterface(boolean useUSBStream) {
+    public JeVoisInterface(boolean useUSBStream) 
+    {
         int retry_counter = 0;
         
         //Retry strategy to get this serial port open.
         //I have yet to see a single retry used assuming the camera is plugged in
         // but you never know.
         while(visionPort == null && retry_counter++ < 10){
-            try {
+            try 
+            {
                 System.out.print("Creating JeVois SerialPort...");
                 visionPort = new SerialPort(BAUD_RATE, SerialPort.Port.kMXP);
                 System.out.println("SUCCESS!!");
-            } catch (Exception e) {
+            } 
+            catch (Exception e) 
+            {
                 System.out.println("FAILED!!");
                 e.printStackTrace();
                 sleep(500);
@@ -106,13 +110,15 @@ public class JeVoisInterface {
 
         
         //Report an error if we didn't get to open the serial port
-        if(visionPort == null){
+        if(visionPort == null)
+        {
             DriverStation.reportError("Cannot open serial port to JeVois. Not starting vision system.", false);
             return;
         }
         
         //Test to make sure we are actually talking to the JeVois
-        if(sendPing() != 0){
+        if(sendPing() != 0)
+        {
             DriverStation.reportError("JeVois ping test failed. Continuing anyway.", false);
             //return;
         }
@@ -271,23 +277,29 @@ public class JeVoisInterface {
      * This is the main perodic update function for the Listener. It is intended
      * to be run in a background task, as it will block until it gets packets. 
      */
-    private void backgroundUpdate(){
+    private void backgroundUpdate(NetworkTable sd)
+    {
         // Grab packets and parse them.
         String packet;
         
         prevPacketRxTime = packetRxTime;
         packet = blockAndGetPacket(2.0);
         
-        if (packet != null){
+        if (packet != null)
+        {
             packetRxTime = Timer.getFPGATimestamp();
-            if (parsePacket(packet, packetRxTime) == 0){
+            if (parsePacket(packet, packetRxTime, sd) == 0)
+            {
                 visionOnline = true;
                 packetRxRatePPS = 1.0/(packetRxTime - prevPacketRxTime);
-            } else {
+            } 
+            else 
+            {
                 visionOnline = false;
             }
             
-        } else {
+        } else 
+        {
             visionOnline = false;
             DriverStation.reportWarning("No packet received (bg)", false);
         }
@@ -563,7 +575,7 @@ public class JeVoisInterface {
      * Parse individual numbers from a packet
      * @param pkt
      */
-    public int parsePacket(String pkt, double rx_Time, NetworkTable table)
+    public int parsePacket(String pkt, double rx_Time, NetworkTable sd)
     {
         //Parsing constants. These must be aligned with JeVois code.
 
@@ -608,9 +620,9 @@ public class JeVoisInterface {
             jeVoisCpuTempC   = Double.parseDouble(tokens[TOK_JV_CPUTEMP]);
             jeVoisCpuLoadPct = Double.parseDouble(tokens[TOK_JV_LOAD]);
 
-            table.putNumberArray("positionHub", positionHub);
-            table.putNumberArray("positionRed", positionRed);
-            table.putNumberArray("positionBlue", positionBlue);
+            sd.putNumberArray("positionHub", positionHub);
+            sd.putNumberArray("positionRed", positionRed);
+            sd.putNumberArray("positionBlue", positionBlue);
             
         } catch (Exception e) {
             DriverStation.reportError("Unhandled exception while parsing Vision packet: " + e.getMessage() + "\n" + e.getStackTrace(), false);
@@ -627,9 +639,11 @@ public class JeVoisInterface {
     {
         public void run()
         {
+            NetworkTables.initialize(server="roborio-639-frc.local");
+            NetworkTable sd = NetworkTables.getTable("Visions");
         	while(!Thread.interrupted())
             {
-        		backgroundUpdate();   
+        		backgroundUpdate(sd);   
         	}
         }
     });

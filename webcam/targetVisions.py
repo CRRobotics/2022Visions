@@ -8,7 +8,7 @@ from networktables import NetworkTables
 
 
 # set up network tables
-NetworkTables.initialize(server='roborio-639-frc.local')
+NetworkTables.initialize(server="roborio-639-frc.local")
 sd = NetworkTables.getTable("Visions")
 
 print("imports done")
