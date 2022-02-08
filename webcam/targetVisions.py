@@ -1,14 +1,20 @@
 import cv2
-import numpy as np
-import library.constants as constants
-import library.functions as functions
 import os
 import sys
+import library.constants as constants
+import library.functions as functions
+from networktables import NetworkTables
 # from testing.gripTest import GripPipeline
+
+
+# set up network tables
+NetworkTables.initialize(server='roborio-639-frc.local')
+sd = NetworkTables.getTable("CameraTracker")
 
 print("imports done")
 cap = cv2.VideoCapture(0)
 print("we out")
+
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -63,12 +69,17 @@ def process():
             opticalVerticalAngle = functions.getAngle(frame, 1, vertex) if vertex is not None else functions.getAngle(frame, 1, centers[0])
             groundVerticalAngle = functions.verticalOpticalToGround(opticalHorizontalAngle, opticalVerticalAngle)
 
+            # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
+            horizontalDistance = functions.getHorizontalDistance(groundVerticalAngle)
+
+            positionHub = [groundHorizontalAngle, horizontalDistance]
+
+            # STEP 5: WRITING TO THE NETWORK TABLE
+            sd.putNumberArray("positionHub", positionHub)
+
             # displaying the horizontal and vertical angles on the frame
             cv2.putText(frame, "Horizontal Angle: " + str(groundHorizontalAngle) + "  Vertical Angle: " + str(groundVerticalAngle), \
                 (frame.shape[1] - 600, frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-
-            # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
-            horizontalDistance = functions.getHorizontalDistance(groundVerticalAngle)
 
             # displaying the horizontal distance to the target on the frame
             cv2.putText(frame, "Distance: " + str(horizontalDistance), \
