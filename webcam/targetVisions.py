@@ -9,7 +9,7 @@ from networktables import NetworkTables
 
 # set up network tables
 NetworkTables.initialize(server='roborio-639-frc.local')
-sd = NetworkTables.getTable("CameraTracker")
+sd = NetworkTables.getTable("Visions")
 
 print("imports done")
 cap = cv2.VideoCapture(0)
