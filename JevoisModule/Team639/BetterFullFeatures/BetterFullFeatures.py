@@ -75,7 +75,7 @@ class BetterFullFeatures:
         contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         contours = functions.filterContours(contours)
 
-        if len(contours) > 0 or False:
+        if len(contours) > 0:
 
             # getting convex hulls
             convexHulls = [cv2.convexHull(contour) for contour in contours]
@@ -125,13 +125,14 @@ class BetterFullFeatures:
 
     
         # Example of sending some serial output message:
-        data = "{ %g %.1f %.3f  %.1f %.3f %.1f %.3f %s %s %s %s }"%(
+        data = "{ %d %.1f %.3f  %.1f %.3f %.1f %.3f %s %s %s 0 }"%(
             self.frame,
             self.groundHorizontalAngle, self.horizontalDistance,
             15.6, 6.78,
             15.6, 6.78,
             self.framerate_fps,self.CPULoad_pct,self.CPUTemp_C,self.pipelineDelay_us
         )
+        #data = f"*{self.frame} 1234567890  1234567890"
         jevois.sendSerial(data)
         # Write frames/s info from our timer into the edge map (NOTE: does not account for output conversion time):
         self.frame += 1
