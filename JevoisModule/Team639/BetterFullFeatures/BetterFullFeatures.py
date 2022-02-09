@@ -51,21 +51,17 @@ class BetterFullFeatures:
     # ###################################################################################################
     ## Process function with no USB output
     def processNoUSB(self, inframe):
-        jevois.LINFO("BEGUN PROCESSNOUSB pipeline")
-        jevois.sendSerial("BEGUN PROCESSNOUSB PIPELINE (THIS IS A SERIAL GENE)")
         self.commonProcess(inframe=inframe)
         
     # ###################################################################################################
     ## Process function with USB output
     def process(self, inframe, outframe):
-        jevois.LINFO("BEGUN PROCESS pipeline")
-        jevois.sendSerial("BEGUN PROCESS PIPELINE (THIS IS A SERIAL GENE)")
         self.commonProcess(inframe=inframe, outframe=outframe)
         
 
 
     def commonProcess(self, inframe, outframe = None):
-        jevois.LINFO("inframe type is "+str(type(inframe)))
+        # jevois.LINFO("inframe type is "+str(type(inframe)))
         # Get the next camera image (may block until it is captured) and here convert it to OpenCV BGR. If you need a
         # grayscale image, just use getCvGRAY() instead of getCvBGR(). Also supported are getCvRGB() and getCvRGBA():
         inframe = inframe.getCvBGR()
@@ -106,7 +102,7 @@ class BetterFullFeatures:
 
             # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
             horizontalDistance = functions.getHorizontalDistance(groundVerticalAngle)
-            
+
             # displaying the horizontal distance to the target on the frame
             cv2.putText(inframe, "Distance: " + str(horizontalDistance), \
                 (inframe.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
@@ -129,13 +125,14 @@ class BetterFullFeatures:
 
     
         # Example of sending some serial output message:
-        data = "{ %g %.1f %.3f  %.1f %.3f %.1f %.3f %s %s %s %s }"%(
+        data = "{ %d %.1f %.3f  %.1f %.3f %.1f %.3f %s %s %s 0 }"%(
             self.frame,
             self.groundHorizontalAngle, self.horizontalDistance,
             15.6, 6.78,
             15.6, 6.78,
             self.framerate_fps,self.CPULoad_pct,self.CPUTemp_C,self.pipelineDelay_us
         )
+        #data = f"*{self.frame} 1234567890  1234567890"
         jevois.sendSerial(data)
         # Write frames/s info from our timer into the edge map (NOTE: does not account for output conversion time):
         self.frame += 1
