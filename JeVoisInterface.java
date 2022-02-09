@@ -1,4 +1,4 @@
-package frc.robot;
+package org.team639.subsystems;
 
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 
 public class JeVoisInterface 
@@ -56,7 +58,7 @@ public class JeVoisInterface
     private double[] positionRed;
     private double[] positionBlue;
     // private double  tgtRange = 0;
-    // private double  tgtTime = 0;
+    private double tgtTime = 0;
     
     // Info about the JeVois performace & status
     private double jeVoisCpuTempC = 0;
@@ -195,46 +197,46 @@ public class JeVoisInterface
 
     }
 
-    /**
-     * Returns the most recently seen target's angle relative to the camera in degrees
-     * Positive means to the Right of center, negative means to the left
-     */
-    public double getTgtAngle_Deg() {
-        return tgtAngleDeg;
-    }
+    // /**
+    //  * Returns the most recently seen target's angle relative to the camera in degrees
+    //  * Positive means to the Right of center, negative means to the left
+    //  */
+    // public double getTgtAngle_Deg() {
+    //     return tgtAngleDeg;
+    // }
 
-    /**
-     * Returns the most recently seen target's range from the camera in inches
-     * Range means distance along the ground from camera mount point to observed target
-     * Return values should only be positive
-     */
-    public double getTgtRange_in() {
-        return tgtRange;
-    }
+    // /**
+    //  * Returns the most recently seen target's range from the camera in inches
+    //  * Range means distance along the ground from camera mount point to observed target
+    //  * Return values should only be positive
+    //  */
+    // public double getTgtRange_in() {
+    //     return tgtRange;
+    // }
     
-    /**
-     * Get the estimated timestamp of the most recent target observation.
-     * This is calculated based on the FPGA timestamp at packet RX time, minus the reportetd vision pipeline delay.
-     * It will not currently account for serial hardware or other delays.
-     */
-    public double getTgtTime() {
-        return tgtTime;
-    }
+    // /**
+    //  * Get the estimated timestamp of the most recent target observation.
+    //  * This is calculated based on the FPGA timestamp at packet RX time, minus the reportetd vision pipeline delay.
+    //  * It will not currently account for serial hardware or other delays.
+    //  */
+    // public double getTgtTime() {
+    //     return tgtTime;
+    // }
     
-    /**
-     * Returns true when the roboRIO is recieving packets from the JeVois, false if no packets have been recieved.
-     * Other modules should not use the vision processing results if this returns false.
-     */
-    public boolean isVisionOnline() {
-        return visionOnline;
-    }
+    // /**
+    //  * Returns true when the roboRIO is recieving packets from the JeVois, false if no packets have been recieved.
+    //  * Other modules should not use the vision processing results if this returns false.
+    //  */
+    // public boolean isVisionOnline() {
+    //     return visionOnline;
+    // }
     
-    /**
-     * Returns true when the JeVois sees a target and is tracking it, false otherwise.
-     */
-    public boolean isTgtVisible() {
-        return tgtVisible;
-    }
+    // /**
+    //  * Returns true when the JeVois sees a target and is tracking it, false otherwise.
+    //  */
+    // public boolean isTgtVisible() {
+    //     return tgtVisible;
+    // }
     
     /**
      * Returns the JeVois's most recently reported CPU Temperature in deg C
@@ -277,7 +279,7 @@ public class JeVoisInterface
      * This is the main perodic update function for the Listener. It is intended
      * to be run in a background task, as it will block until it gets packets. 
      */
-    private void backgroundUpdate(NetworkTable sd)
+    private void backgroundUpdate()
     {
         // Grab packets and parse them.
         String packet;
@@ -288,7 +290,7 @@ public class JeVoisInterface
         if (packet != null)
         {
             packetRxTime = Timer.getFPGATimestamp();
-            if (parsePacket(packet, packetRxTime, sd) == 0)
+            if (parsePacket(packet, packetRxTime) == 0)
             {
                 visionOnline = true;
                 packetRxRatePPS = 1.0/(packetRxTime - prevPacketRxTime);
@@ -575,7 +577,7 @@ public class JeVoisInterface
      * Parse individual numbers from a packet
      * @param pkt
      */
-    public int parsePacket(String pkt, double rx_Time, NetworkTable sd)
+    public int parsePacket(String pkt, double rx_Time)
     {
         //Parsing constants. These must be aligned with JeVois code.
 
@@ -600,7 +602,7 @@ public class JeVoisInterface
 
         //Split string into many substrings, presuming those strings are separated by commas
         String[] tokens = pkt.split(PKT_SEP);
-
+        System.out.println(tokens);
         //Check there were enough substrings found
         if (tokens.length < NTOK) {
             DriverStation.reportError("Malformed vision packet. Expected " + Integer.toString(NTOK) + 
@@ -620,9 +622,9 @@ public class JeVoisInterface
             jeVoisCpuTempC   = Double.parseDouble(tokens[TOK_JV_CPUTEMP]);
             jeVoisCpuLoadPct = Double.parseDouble(tokens[TOK_JV_LOAD]);
 
-            sd.putNumberArray("positionHub", positionHub);
-            sd.putNumberArray("positionRed", positionRed);
-            sd.putNumberArray("positionBlue", positionBlue);
+            // sd.putNumberArray("positionHub", positionHub);
+            // sd.putNumberArray("positionRed", positionRed);
+            // sd.putNumberArray("positionBlue", positionBlue);
             
         } catch (Exception e) {
             DriverStation.reportError("Unhandled exception while parsing Vision packet: " + e.getMessage() + "\n" + e.getStackTrace(), false);
@@ -639,11 +641,12 @@ public class JeVoisInterface
     {
         public void run()
         {
-            NetworkTables.initialize(server="roborio-639-frc.local");
-            NetworkTable sd = NetworkTables.getTable("Visions");
+            // NetworkTableInstance inst = NetworkTableInstance.getDefault();
+            // NetworkTable sd = inst.getTable("Visions");
+            // NetworkTableEntry positionHub = sd.getEntry("positionHub");
         	while(!Thread.interrupted())
             {
-        		backgroundUpdate(sd);   
+        		backgroundUpdate();   
         	}
         }
     });
