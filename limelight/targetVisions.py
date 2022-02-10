@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 import math
+import os
+import sys
 
 # global variables go here:\
 # test script 0
@@ -59,7 +61,14 @@ def getCenters(img, contours):
     centers = []
     for i in range(len(contours)):
         moments = cv2.moments(contours[i])
-        centers.append((int(moments['m10']/moments['m00']), int(moments['m01']/moments['m00'])))
+        try:
+            centers.append((int(moments['m10']/moments['m00']), int(moments['m01']/moments['m00'])))
+        except Exception as e:
+            print(moments)
+            print(moments['m00'])
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
         cv2.circle(img, centers[-1], 3, (0, 0, 0), -1)
     return centers
 
