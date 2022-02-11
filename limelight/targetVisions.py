@@ -16,21 +16,27 @@ HEIGHT_OF_CAMERA        = 29.5
 HEIGHT_OF_TARGET        = 66.0
 HEIGHT_TO_TARGET        = HEIGHT_OF_TARGET - HEIGHT_OF_CAMERA
 # CAMERA_ANGLE		    = 16.4
-CAMERA_ANGLE		    = 10.0
+CAMERA_ANGLE		    = 30.0 * (math.pi / 180)
 
 
 # THIS VALUE HAS BEEN DETERMINED BY CLOSE-TESTING, CAHNGE THESE VALUES LATER
 MIN_AREA_CONTOUR        = 20.0
 
-CAMERA_EXPERIMENTAL_DISTANCE = 92
-CAMERA_X = 85
-CAMERA_Y = 47
-FOV_X = math.atan((CAMERA_X / 2) / CAMERA_EXPERIMENTAL_DISTANCE) * 2
-FOV_Y = math.atan((CAMERA_Y / 2) / CAMERA_EXPERIMENTAL_DISTANCE) * 2
+FOV_X                   = 54 * (math.pi / 180)
+FOV_Y                   = 41 * (math.pi / 180)
+
+RADIANS_PER_PIXEL_X     = FOV_X / 320
+RADIANS_PER_PIXEL_Y     = FOV_Y / 240
+
+# CAMERA_EXPERIMENTAL_DISTANCE = 92
+# CAMERA_X = 85
+# CAMERA_Y = 47
+# FOV_X = math.atan((CAMERA_X / 2) / CAMERA_EXPERIMENTAL_DISTANCE) * 2
+# FOV_Y = math.atan((CAMERA_Y / 2) / CAMERA_EXPERIMENTAL_DISTANCE) * 2
 # RADIANS_PER_PIXEL_X = FOV_X / 1280
 # RADIANS_PER_PIXEL_Y = FOV_Y / 720
-RADIANS_PER_PIXEL_X = FOV_X / 640
-RADIANS_PER_PIXEL_Y = FOV_Y / 480
+# RADIANS_PER_PIXEL_X = FOV_X / 640
+# RADIANS_PER_PIXEL_Y = FOV_Y / 480
 
 # values for cafeteria
 hue = [45, 122]
@@ -114,19 +120,17 @@ def getParabola(frame, centers):
     cv2.circle(frame, vertex, 3, (0, 0, 255), -1)
     return vertex
 
-# MATH
 def getVertex(a, b, c):
     "y = ax^2+bx+c"
     return (int(-b / (2 * a)), int(((4 * a * c) - (b * b)) / (4 * a)))
 
-# converts the horizontal angle relative to the optical axis to the horizontal angle relative to the ground
-def horizontalOpticalToGround(angle):
-    return math.atan((1 / math.cos(CAMERA_ANGLE)) * math.tan(angle))
+def angleToRadians(degrees):
+    "degrees to radians"
+    return degrees * (math.pi / 180)
 
-# converts the vertical angle relative to the optical axis to the vertical angle relative to the ground
-def verticalOpticalToGround(opticalHorizontalAngle, opticalVerticalAngle):
-    return math.asin(math.cos(CAMERA_ANGLE) * math.sin(opticalVerticalAngle) + \
-        math.cos(opticalHorizontalAngle) * math.cos(opticalVerticalAngle) * math.sin(CAMERA_ANGLE))
+def angleToDegrees(radians):
+    "radians to degrees"
+    return (radians / math.pi) * 180
 
 # gets the angle based on the fov, orientation, and coordinate of the parabola representing the target
 # @param img The image or frame to use
@@ -152,22 +156,23 @@ def getAngle(img, orientation:int, coordinate:tuple):
         angle = RADIANS_PER_PIXEL_X * distanceFromCenter
     elif orientation == 1:
         distanceFromCenter = centerPixel[1] - cY
-        angle = RADIANS_PER_PIXEL_Y * distanceFromCenter + angleToRadians(CAMERA_ANGLE)
-    return angleToDegrees(angle)
+        angle = RADIANS_PER_PIXEL_Y * distanceFromCenter + CAMERA_ANGLE
+    return angle
     # pixelRepresent = fov/(math.sqrt(h ** 2 + w ** 2))
     # return int(pixelRepresent * distanceFromCenter)
+
+# converts the horizontal angle relative to the optical axis to the horizontal angle relative to the ground
+def horizontalOpticalToGround(angle):
+    return math.atan((1 / math.cos(CAMERA_ANGLE)) * math.tan(angle))
+
+# converts the vertical angle relative to the optical axis to the vertical angle relative to the ground
+def verticalOpticalToGround(opticalHorizontalAngle, opticalVerticalAngle):
+    return math.asin(math.cos(CAMERA_ANGLE) * math.sin(opticalVerticalAngle) + \
+        math.cos(opticalHorizontalAngle) * math.cos(opticalVerticalAngle) * math.sin(CAMERA_ANGLE))
 
 # determines the horizontal distance to the target based on the angle and height of the target relative to the robot
 def getHorizontalDistance(angle, degrees=True, heightToTarget=HEIGHT_TO_TARGET):
     return heightToTarget / math.tan(angleToRadians(angle)) if degrees else heightToTarget / math.tan(angle)
-
-def angleToRadians(degrees):
-    "degrees to radians"
-    return degrees*(math.pi / 180)
-
-def angleToDegrees(radians):
-    "radians to degrees"
-    return (radians / math.pi) * 180
     
 # runPipeline() is called every frame by Limelight's backend.
 def runPipeline(image, llrobot):
@@ -214,15 +219,21 @@ def runPipeline(image, llrobot):
         # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
         horizontalDistance = getHorizontalDistance(groundVerticalAngle)
 
+        opticalHorizontalAngle = round(angleToDegrees(opticalHorizontalAngle), 2)
+        opticalVerticalAngle = round(angleToDegrees(opticalVerticalAngle), 2)
+        groundHorizontalAngle = round(angleToDegrees(groundHorizontalAngle), 2)
+        groundVerticalAngle = round(angleToDegrees(groundVerticalAngle), 2)
+        horizontalDistance = round(angleToDegrees(horizontalDistance), 2)
+
         positionHub = [groundHorizontalAngle, horizontalDistance]
 
         # displaying the horizontal and vertical angles on the image
         cv2.putText(image, "Horizontal Angle: " + str(groundHorizontalAngle) + "  Vertical Angle: " + str(groundVerticalAngle), \
-            (image.shape[1] - 600, image.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            (image.shape[1] - 310, image.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 2)
 
         # displaying the horizontal distance to the target on the image
         cv2.putText(image, "Distance: " + str(horizontalDistance), \
-            (image.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            (image.shape[1] - 300, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     
 
     llpython = [0, 0, 0, 0, 0, 0, 0, 0]
