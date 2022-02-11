@@ -20,7 +20,7 @@ CAMERA_ANGLE		    = 10.0
 
 
 # THIS VALUE HAS BEEN DETERMINED BY CLOSE-TESTING, CAHNGE THESE VALUES LATER
-MIN_AREA_CONTOUR        = 50.0
+MIN_AREA_CONTOUR        = 20.0
 
 CAMERA_EXPERIMENTAL_DISTANCE = 92
 CAMERA_X = 85
@@ -32,9 +32,10 @@ FOV_Y = math.atan((CAMERA_Y / 2) / CAMERA_EXPERIMENTAL_DISTANCE) * 2
 RADIANS_PER_PIXEL_X = FOV_X / 640
 RADIANS_PER_PIXEL_Y = FOV_Y / 480
 
-hue = [70, 94]
-sat = [128, 255]
-val = [228, 255]
+# values for cafeteria
+hue = [45, 122]
+sat = [167, 255]
+val = [186, 255]
 
 # HELPER FUNCTIONS
 def HSVFilter(frame):
@@ -49,9 +50,9 @@ def filterContours(contours, min_size = MIN_AREA_CONTOUR):
     numContours = 4 if len(contours) > 4 else len(contours)
     sortedContours = sorted(contours, key=lambda contour: -cv2.contourArea(contour))
     for i in range(numContours):
-        # area = cv2.contourArea(sortedContours[i])
-        # if area < min_size:
-        #     break
+        area = cv2.contourArea(sortedContours[i])
+        if area < min_size:
+            break
         filteredContours.append(sortedContours[i])
     return filteredContours
 
@@ -61,15 +62,27 @@ def getCenters(img, contours):
     centers = []
     for i in range(len(contours)):
         moments = cv2.moments(contours[i])
-        try:
-            centers.append((int(moments['m10']/moments['m00']), int(moments['m01']/moments['m00'])))
-        except Exception as e:
-            print(moments)
-            print(moments['m00'])
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+        centers.append((int(moments['m10']/moments['m00']), int(moments['m01']/moments['m00'])))
         cv2.circle(img, centers[-1], 3, (0, 0, 0), -1)
+        # try:
+        #     print("--------------------------------")
+        #     print("m00: ", moments['m00'])
+        #     print("m10: ", moments['m10'])
+        #     print("m01: ", moments['m01'])
+        #     print("contour:", contours[i])
+        #     x = moments['m10'] / moments['m00']
+        #     y = moments['m01'] / moments['m00']
+        #     centers.append((int(x), int(y)))
+        #     cv2.circle(img, centers[-1], 3, (0, 0, 0), -1)
+        # except Exception as e:
+        #     print("-------------------------------")
+        #     print(moments)
+        #     print(moments['m00'])
+        #     print("contour:", contours[i])
+        #     exc_type, exc_obj, exc_tb = sys.exc_info()
+        #     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        #     print(exc_type, fname, exc_tb.tb_lineno)
+        #     centers.append([0, 0])
     return centers
 
 def getParabola(frame, centers):
