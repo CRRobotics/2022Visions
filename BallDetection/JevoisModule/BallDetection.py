@@ -4,6 +4,8 @@ import numpy as np
 import json
 from datetime import datetime
 import re
+import functions as f
+import constants
 ## creator
 #
 # Add some description of your module here.
@@ -65,10 +67,49 @@ class BallDetection:
         self.timer.start()
         pipline_start_time = datetime.now()
 
+
+
+
+        f.putCenterPixelIn(frame=inframe)
+
+        ksize = int(2 * round(constants.BLUR_RADIUS) + 1)
+        blur = cv2.blur(inframe, (ksize,ksize))
+        mask = f.HSVFilterBLUE(blur)
+        contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours = f.filterContours(contours)
+        convexHulls = [cv2.convexHull(contour) for contour in contours]
+        cv2.drawContours(inframe, convexHulls, -1, (0, 0, 255), 1)
+        
+        try:
+            centers = f.getCenters(inframe, convexHulls) ##WILL GET 2 LARGEST CONTOURS
+            print(centers)
+            if centers:
+                verticalAngle = round(f.getAngle(inframe, 1, centers[0]),2)
+                opticalHorizontalAngle = f.getAngle(inframe, 0, centers[0])
+                self.blueBallAngle = round(f.horizontalOpticalToGround(opticalHorizontalAngle), 2)
+                horizontalDistance = round(f.getHorizontalDistance(verticalAngle), 2)
+                
+                self.blueBallDistance = f.groundAngleToHypotnuse(self.blueBallAngle, horizontalDistance)
+
+
+                cv2.putText(inframe, "Horizontal Angle: " + str(self.blueBallAngle) + "  Vertical Angle: " + str(verticalAngle), \
+                    (inframe.shape[1] - 310, inframe.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 2)
+
+                # displaying the horizontal distance to the target on the inframe
+                cv2.putText(inframe, "Distance: " + str(self.blueBallDistance), \
+                    (inframe.shape[1] - 300, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+        except:
+            pass
+        
+
+
+
+
+
+
         if outframe:
             outframe.sendCv(inframe)
-
-
 
 
 
@@ -81,13 +122,20 @@ class BallDetection:
             self.CPUTemp_C = results.group(3)
 
         # Example of sending some serial output message:
-        data = "{ %d }"%(
-            self.frame
+        data = "{ %d | %.2f %.3f  %.2f %.3f | %s %s %s %s }"%(
+            self.frame % 999,
+            self.blueBallAngle, self.blueBallDistance,
+            self.redBallAngle, self.redBallDistance,
+            self.framerate_fps,self.CPULoad_pct,self.CPUTemp_C,self.pipelineDelay_us
         )
         #data = f"*{self.frame} 1234567890  1234567890"
         jevois.sendSerial(data)
         # Write frames/s info from our timer into the edge map (NOTE: does not account for output conversion time):
         self.frame += 1
+        self.redBallAngle = -1
+        self.redBallDistance = -1
+        self.blueBallAngle = -1
+        self.blueBallDistance = -1  
 
 
     # ###################################################################################################
