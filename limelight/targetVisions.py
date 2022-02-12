@@ -20,7 +20,7 @@ CAMERA_ANGLE		    = 30.0 * (math.pi / 180)
 
 
 # THIS VALUE HAS BEEN DETERMINED BY CLOSE-TESTING, CAHNGE THESE VALUES LATER
-MIN_AREA_CONTOUR        = 20.0
+MIN_AREA_CONTOUR        = 1.0
 
 FOV_X                   = 54 * (math.pi / 180)
 FOV_Y                   = 41 * (math.pi / 180)
@@ -39,9 +39,17 @@ RADIANS_PER_PIXEL_Y     = FOV_Y / 240
 # RADIANS_PER_PIXEL_Y = FOV_Y / 480
 
 # values for cafeteria
-hue = [45, 122]
-sat = [167, 255]
-val = [186, 255]
+# hue = [45, 122]
+# sat = [167, 255]
+# val = [186, 255]
+
+# hue = [45, 122]
+# sat = [131, 255]
+# val = [158, 255]
+
+hue = [73, 122]
+sat = [78, 255]
+val = [158, 255]
 
 # HELPER FUNCTIONS
 def HSVFilter(frame):
@@ -176,6 +184,7 @@ def getHorizontalDistance(angle, degrees=True, heightToTarget=HEIGHT_TO_TARGET):
     
 # runPipeline() is called every frame by Limelight's backend.
 def runPipeline(image, llrobot):
+    llpython = [0, 0, 0, 0, 0, 0, 0, 0]
     # STEP 1: IDENTIFY THE TARGET
 
     # getting HSV filter to distinguish the target from surroundings
@@ -225,7 +234,8 @@ def runPipeline(image, llrobot):
         groundVerticalAngle = round(angleToDegrees(groundVerticalAngle), 2)
         horizontalDistance = round(angleToDegrees(horizontalDistance), 2)
 
-        positionHub = [groundHorizontalAngle, horizontalDistance]
+        # writing to the NetworkTable
+        llpython = [groundHorizontalAngle, horizontalDistance, 0, 0, 0, 0, 0, 0]
 
         # displaying the horizontal and vertical angles on the image
         cv2.putText(image, "Horizontal Angle: " + str(groundHorizontalAngle) + "  Vertical Angle: " + str(groundVerticalAngle), \
@@ -234,11 +244,9 @@ def runPipeline(image, llrobot):
         # displaying the horizontal distance to the target on the image
         cv2.putText(image, "Distance: " + str(horizontalDistance), \
             (image.shape[1] - 300, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-    
-
-    llpython = [0, 0, 0, 0, 0, 0, 0, 0]
-        # make sure to return a contour,
-        # an image to stream,
-        # and optionally an array of up to 8 values for the "llpython"
-        # networktables array
+            
+    # make sure to return a contour,
+    # an image to stream,
+    # and optionally an array of up to 8 values for the "llpython"
+    # networktables array
     return largestConvex, image, llpython
