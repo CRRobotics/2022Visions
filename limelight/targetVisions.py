@@ -179,12 +179,12 @@ def verticalOpticalToGround(opticalHorizontalAngle, opticalVerticalAngle):
         math.cos(opticalHorizontalAngle) * math.cos(opticalVerticalAngle) * math.sin(CAMERA_ANGLE))
 
 # determines the horizontal distance to the target based on the angle and height of the target relative to the robot
-def getHorizontalDistance(angle, degrees=False, heightToTarget=HEIGHT_TO_TARGET):
+def getHorizontalDistance(angle, degrees=True, heightToTarget=HEIGHT_TO_TARGET):
     return heightToTarget / math.tan(angleToRadians(angle)) if degrees else heightToTarget / math.tan(angle)
     
 # runPipeline() is called every frame by Limelight's backend.
 def runPipeline(image, llrobot):
-    llpython = ["", -1, 0, 0, 0, 0, 0, 0]
+    llpython = [361, -1, 0, 0, 0, 0, 0, 0]
     # STEP 1: IDENTIFY THE TARGET
 
     # getting HSV filter to distinguish the target from surroundings
@@ -217,7 +217,13 @@ def runPipeline(image, llrobot):
         centers = getCenters(image, convexHulls)
         
         # STEP 2: DETERMINE THE PARABOLIC FIT WITH LEAST SQUARES USING THE CENTER COORDINATES OF THE TAPE
-        vertex = getParabola(image, centers) if len(centers) >= 3 else None
+        try:
+            vertex = getParabola(image, centers) if len(centers) >= 3 else None
+        except Exception as e:
+            vertex = None
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
         # STEP 3: DETERMINE HORIZONTAL AND VERTICAL ANGLES TO TARGET (FROM THE ROBOT)
         opticalHorizontalAngle = getAngle(image, 0, vertex) if vertex is not None else getAngle(image, 0, centers[0])
@@ -244,7 +250,7 @@ def runPipeline(image, llrobot):
         # displaying the horizontal distance to the target on the image
         cv2.putText(image, "Distance: " + str(horizontalDistance), \
             (image.shape[1] - 300, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-
+            
     # make sure to return a contour,
     # an image to stream,
     # and optionally an array of up to 8 values for the "llpython"
