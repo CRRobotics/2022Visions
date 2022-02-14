@@ -184,7 +184,7 @@ def getHorizontalDistance(angle, degrees=False, heightToTarget=HEIGHT_TO_TARGET)
     
 # runPipeline() is called every frame by Limelight's backend.
 def runPipeline(image, llrobot):
-    llpython = [-1, "", 0, 0, 0, 0, 0, 0]
+    llpython = ["", -1, 0, 0, 0, 0, 0, 0]
     # STEP 1: IDENTIFY THE TARGET
 
     # getting HSV filter to distinguish the target from surroundings
