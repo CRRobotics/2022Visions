@@ -47,8 +47,13 @@ RADIANS_PER_PIXEL_Y     = FOV_Y / 240
 # sat = [131, 255]
 # val = [158, 255]
 
+# hue = [73, 122]
+# sat = [78, 255]
+# val = [158, 255]
+
+# values for E1
 hue = [73, 122]
-sat = [78, 255]
+sat = [174, 255]
 val = [158, 255]
 
 # HELPER FUNCTIONS
@@ -57,6 +62,13 @@ def HSVFilter(frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, (hue[0], sat[0], val[0]), (hue[1], sat[1], val[1]))
     return mask
+
+def binarizeSubt(img):
+    blue, green, red = cv2.split(img)
+    diff = cv2.subtract(green, red)
+    ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    # binImage = cv2.cvtColor(binImage, cv2.COLOR_BGR2GRAY) # idk if we need this
+    return binImage
 
 def filterContours(contours, min_size = MIN_AREA_CONTOUR):
     "filters out contours that are smaller than min_size"
@@ -221,9 +233,6 @@ def runPipeline(image, llrobot):
             vertex = getParabola(image, centers) if len(centers) >= 3 else None
         except Exception as e:
             vertex = None
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
 
         # STEP 3: DETERMINE HORIZONTAL AND VERTICAL ANGLES TO TARGET (FROM THE ROBOT)
         opticalHorizontalAngle = getAngle(image, 0, vertex) if vertex is not None else getAngle(image, 0, centers[0])
