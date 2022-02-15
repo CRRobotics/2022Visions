@@ -63,6 +63,8 @@ def HSVFilter(frame):
     mask = cv2.inRange(hsv, (hue[0], sat[0], val[0]), (hue[1], sat[1], val[1]))
     return mask
 
+# Alternative to HSVFilter
+# Subtract red channel from green channel to filter image
 def binarizeSubt(img):
     blue, green, red = cv2.split(img)
     diff = cv2.subtract(green, red)
