@@ -52,9 +52,13 @@ RADIANS_PER_PIXEL_Y     = FOV_Y / 240
 # val = [158, 255]
 
 # values for E1
+# hue = [73, 122]
+# sat = [174, 255]
+# val = [158, 255]
+
 hue = [73, 122]
-sat = [174, 255]
-val = [158, 255]
+sat = [0, 255]
+val = [146, 255]
 
 # HELPER FUNCTIONS
 def HSVFilter(frame):
@@ -67,9 +71,21 @@ def HSVFilter(frame):
 # Subtract red channel from green channel to filter image
 def binarizeSubt(img):
     blue, green, red = cv2.split(img)
+    # print(type(blue[0][0]), type(green[0][0]), type(red[0][0]))
     diff = cv2.subtract(green, red)
-    ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_OTSU)
+    ret, binImage = cv2.threshold(diff, 120, 255, cv2.THRESH_BINARY)
+    # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     # binImage = cv2.cvtColor(binImage, cv2.COLOR_BGR2GRAY) # idk if we need this
+    return binImage
+
+def binarizeSubt2(img):
+    blue, green, red = cv2.split(img)
+    cyan = blue.astype("float32") * 0.5 + green.astype("float32") * 0.5
+    cyan = cyan.astype("uint8")
+    diff = cv2.subtract(cyan, red)
+    diff.astype("uint8")
+    ret, binImage = cv2.threshold(diff, 105, 255, cv2.THRESH_BINARY)
     return binImage
 
 def filterContours(contours, min_size = MIN_AREA_CONTOUR):
@@ -202,7 +218,19 @@ def runPipeline(image, llrobot):
     # STEP 1: IDENTIFY THE TARGET
 
     # getting HSV filter to distinguish the target from surroundings
-    mask = HSVFilter(image)
+    # mask1 = HSVFilter(image).astype("float32")
+    # mask2 = binarizeSubt(image).astype("float32")
+    # mask = 255 * (mask1 + mask2)
+    # mask = mask.clip(0, 255).astype("uint8")
+
+    mask = binarizeSubt2(image)
+
+    # mask = HSVFilter(image)
+
+    # mask1 = HSVFilter(image)
+    # mask2 = binarizeSubt(image)
+    # mask = cv2.bitwise_and(mask2, mask2, mask = mask1)
+    # # mask = cv2.bitwise_and(mask1, mask1, mask = mask2)
 
     # finding and filtering the contours in the image to only get the contour of the tape
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)

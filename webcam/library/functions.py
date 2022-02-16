@@ -13,6 +13,18 @@ def HSVFilter(frame):
     mask = cv2.inRange(hsv, (constants.hue[0], constants.sat[0], constants.val[0]), (constants.hue[1], constants.sat[1], constants.val[1]))
     return mask
 
+# Alternative to HSVFilter
+# Subtract red channel from green channel to filter image
+def binarizeSubt(img):
+    blue, green, red = cv2.split(img)
+    # diff = cv2.subtract(green, red)
+    diff = cv2.subtract(red, green)
+    # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_OTSU)
+    ret, binImage = cv2.threshold(diff, 100, 255, cv2.THRESH_BINARY)
+    # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    # binImage = cv2.cvtColor(binImage, cv2.COLOR_BGR2GRAY) # idk if we need this
+    return binImage
+
 def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR):
     "filters out contours that are smaller than min_size"
     filteredContours = []
