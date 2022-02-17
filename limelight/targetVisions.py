@@ -16,7 +16,7 @@ HEIGHT_OF_CAMERA        = 29.5
 HEIGHT_OF_TARGET        = 66.0
 HEIGHT_TO_TARGET        = HEIGHT_OF_TARGET - HEIGHT_OF_CAMERA
 # CAMERA_ANGLE		    = 16.4
-CAMERA_ANGLE		    = 30.0 * (math.pi / 180)
+CAMERA_ANGLE		    = 28.1 * (math.pi / 180)
 
 
 # THIS VALUE HAS BEEN DETERMINED BY CLOSE-TESTING, CAHNGE THESE VALUES LATER
@@ -214,7 +214,7 @@ def getHorizontalDistance(angle, degrees=True, heightToTarget=HEIGHT_TO_TARGET):
     
 # runPipeline() is called every frame by Limelight's backend.
 def runPipeline(image, llrobot):
-    llpython = [361, -1, 0, 0, 0, 0, 0, 0]
+    llpython = [361.0, -1.0, 0, 0, 0, 0, 0, 0]
     # STEP 1: IDENTIFY THE TARGET
 
     # getting HSV filter to distinguish the target from surroundings
@@ -223,7 +223,7 @@ def runPipeline(image, llrobot):
     # mask = 255 * (mask1 + mask2)
     # mask = mask.clip(0, 255).astype("uint8")
 
-    mask = binarizeSubt2(image)
+    mask = binarizeSubt(image)
 
     # mask = HSVFilter(image)
 
