@@ -4,18 +4,15 @@ import math
 import os
 import sys
 
-# global variables go here:\
+# global variables go here:
 # test script 0
 testVar = 0
 
 # CONSTANTS
-# these are random numbers for now, will change later
-# HEIGHT_OF_CAMERA        = 38.5
+CAMERA_EXPOSURE         = 11 # (0.1 ms) to be set in "input" tab in limelight
 HEIGHT_OF_CAMERA        = 29.5
-# HEIGHT_OF_TARGET        = 107.0
-HEIGHT_OF_TARGET        = 66.0
+HEIGHT_OF_TARGET        = 107.0
 HEIGHT_TO_TARGET        = HEIGHT_OF_TARGET - HEIGHT_OF_CAMERA
-# CAMERA_ANGLE		    = 16.4
 CAMERA_ANGLE		    = 28.1 * (math.pi / 180)
 
 
@@ -74,7 +71,7 @@ def binarizeSubt(img):
     # print(type(blue[0][0]), type(green[0][0]), type(red[0][0]))
     diff = cv2.subtract(green, red)
     # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_OTSU)
-    ret, binImage = cv2.threshold(diff, 120, 255, cv2.THRESH_BINARY)
+    ret, binImage = cv2.threshold(diff, 100, 255, cv2.THRESH_BINARY)
     # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     # binImage = cv2.cvtColor(binImage, cv2.COLOR_BGR2GRAY) # idk if we need this
     return binImage
@@ -85,7 +82,7 @@ def binarizeSubt2(img):
     cyan = cyan.astype("uint8")
     diff = cv2.subtract(cyan, red)
     diff.astype("uint8")
-    ret, binImage = cv2.threshold(diff, 105, 255, cv2.THRESH_BINARY)
+    ret, binImage = cv2.threshold(diff, 110, 255, cv2.THRESH_BINARY)
     return binImage
 
 def filterContours(contours, min_size = MIN_AREA_CONTOUR):
