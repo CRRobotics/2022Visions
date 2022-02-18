@@ -206,7 +206,7 @@ def verticalOpticalToGround(opticalHorizontalAngle, opticalVerticalAngle):
         math.cos(opticalHorizontalAngle) * math.cos(opticalVerticalAngle) * math.sin(CAMERA_ANGLE))
 
 # determines the horizontal distance to the target based on the angle and height of the target relative to the robot
-def getHorizontalDistance(angle, degrees=True, heightToTarget=HEIGHT_TO_TARGET):
+def getHorizontalDistance(angle, degrees=False, heightToTarget=HEIGHT_TO_TARGET):
     return heightToTarget / math.tan(angleToRadians(angle)) if degrees else heightToTarget / math.tan(angle)
     
 # runPipeline() is called every frame by Limelight's backend.
