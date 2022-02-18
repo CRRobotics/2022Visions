@@ -36,7 +36,7 @@ class GripPipelineFOrBlueBalls:
         self.__filter_contours_max_width = 1000.0
         self.__filter_contours_min_height = 0.0
         self.__filter_contours_max_height = 1000.0
-        self.__filter_contours_solidity = [92.26618705035969, 100.0]
+        self.__filter_contours_solidity = [66, 100.0]
         self.__filter_contours_max_vertices = 1000000.0
         self.__filter_contours_min_vertices = 5.0
         self.__filter_contours_min_ratio = 0.0
@@ -188,3 +188,11 @@ class GripPipelineFOrBlueBalls:
 
 BlurType = Enum('BlurType', 'Box_Blur Gaussian_Blur Median_Filter Bilateral_Filter')
 
+if __name__ == "__main__":
+    cap = cv2.VideoCapture(0)
+    while True:
+        success, frame = cap.read()
+        pipeline = GripPipelineFOrBlueBalls()
+        pipeline.process(frame)
+
+        cv2.imshow("image", pipeline.convex_hulls_output)

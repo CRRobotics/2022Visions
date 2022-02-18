@@ -13,18 +13,29 @@ def HSVFilterBLUE(frame):
     mask = cv2.inRange(hsv, (constants.hue_B[0], constants.sat_B[0], constants.val_B[0]), (constants.hue_B[1], constants.sat_B[1], constants.val_B[1]))
     return mask
 
+def HSVFilterRED(frame):
+    "returns filtered img"
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, (constants.hue_R[0], constants.sat_R[0], constants.val_R[0]), (constants.hue_R[1], constants.sat_R[1], constants.val_R[1]))
+    return mask
+
 def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR):
     "filters out contours that are smaller than min_size"
     filteredContours = []
-    numContours = 2 if len(contours) > 2 else len(contours)
+    numContours = 1 if len(contours) > 1 else len(contours)
     sortedContours = sorted(contours, key=lambda contour: -cv2.contourArea(contour))
+    finalContours = []
     for i in range(numContours):
         # area = cv2.contourArea(sortedContours[i])
         # if area < min_size:
         #     break
-        filteredContours.append(sortedContours[i])
+        if len(sortedContours[i]) > constants.MIN_VERTICES_CONTOUR:
+            area = cv2.contourArea(sortedContours[i])
+            hull = cv2.convexHull(sortedContours[i])
+            solid = 100 * area / cv2.contourArea(hull)
+            if (solid > constants.SOLIDITY[0] and solid < constants.SOLIDITY[1]):
+                filteredContours.append(sortedContours[i])
     return filteredContours
-
 
 
 def getCenters(img,contours):
@@ -39,19 +50,19 @@ def getCenters(img,contours):
     
     return centres
 
-def getHorizontalDistance(angle, degrees=True, heightToTarget=constants.HEIGHT_TO_TARGET):
-    return heightToTarget / math.tan(angleToRadians(angle)) if degrees else heightToTarget / math.tan(angle)
-    
+def getGroundHorizontalAngle(verticalOptical, horizontalOptical, tilt = constants.CAMERA_ANGLE):
+    "TAKES IN RADIANS, OUTPUTS RADIANS"
+    if tilt == 0:
+        return horizontalOptical
+    return math.atan(math.tan(horizontalOptical) * (math.tan(tilt)/math.sin(tilt)))
 
-def groundAngleToHypotnuse(angle, distance, inRadians = False):
-    if not inRadians:
-        return abs(distance / math.cos(angleToRadians(angle)))
-    else:
-        return abs(distance / math.cos(angle))
+def getDistance(verticalOptical, horizontalOptical, height_to_target = constants.HEIGHT_TO_TARGET, tilt = constants.CAMERA_ANGLE):
+    "takes in radians for angles, and outputs the same unit as HEIGHT_TO_TARGET"
+    if tilt == 0:
+        return (1/math.cos(horizontalOptical))*(height_to_target/math.tan(verticalOptical))
+    return (1/math.cos(math.atan(math.tan(horizontalOptical) * (math.tan(tilt)/math.sin(tilt))))) * (height_to_target/math.tan(tilt + verticalOptical))
 
-# converts the horizontal angle relative to the optical axis to the horizontal angle relative to the ground
-def horizontalOpticalToGround(angle):
-    return math.atan((1 / math.cos(constants.CAMERA_ANGLE)) * math.tan(angle))
+
 
 
 def getAngle(img, orientation:int, coordinate:tuple):
