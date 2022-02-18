@@ -58,6 +58,18 @@ sat = [0, 255]
 val = [146, 255]
 
 # HELPER FUNCTIONS
+def printConstants():
+    print("CAMERA_EXPOSURE: ", CAMERA_EXPOSURE)
+    print("HEIGHT_OF_CAMERA: ", HEIGHT_OF_CAMERA)
+    print("HEIGHT_OF_TARGET: ", HEIGHT_OF_TARGET)
+    print("HEIGHT_TO_TARGET: ", HEIGHT_TO_TARGET)
+    print("CAMERA_ANGLE: ", CAMERA_ANGLE)
+    print("MIN_AREA_CONTOUR: ", MIN_AREA_CONTOUR)
+    print("FOV_X: ", FOV_X)
+    print("FOV_Y: ", FOV_Y)
+    print("RADIANS_PER_PIXEL_X: ", RADIANS_PER_PIXEL_X)
+    print("RADIANS_PER_PIXEL_Y: ", RADIANS_PER_PIXEL_Y)
+
 def HSVFilter(frame):
     "returns filtered img"
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -180,8 +192,15 @@ def getAngle(img, orientation:int, coordinate:tuple):
  NOTE: vertical angle is only accurate if the x-coordinate of the center coordinate is in the middle of the frame
  @param coordinate The coordinate of the center of the tape or parabola"""
     h, w, c = img.shape
+    # h = 240
+    # w = 360
     cX = coordinate[0]
     cY = coordinate[1]
+
+    print("h: ", h)
+    print("w: ", w)
+    print("cX: ", cX)
+    print("cY: ", cY)
 
     # centerPixel = (int(h/2), int(w/2))
     # distanceFromCenter = (math.sqrt(((cX - centerPixel[0]) **2 ) + ((cY - centerPixel[1]) ** 2)))
@@ -191,6 +210,7 @@ def getAngle(img, orientation:int, coordinate:tuple):
         angle = RADIANS_PER_PIXEL_X * distanceFromCenter
     elif orientation == 1:
         distanceFromCenter = centerPixel[1] - cY
+        print("distanceFromCenter: ", distanceFromCenter)
         angle = RADIANS_PER_PIXEL_Y * distanceFromCenter + CAMERA_ANGLE
     return angle
     # pixelRepresent = fov/(math.sqrt(h ** 2 + w ** 2))
@@ -212,6 +232,8 @@ def getHorizontalDistance(angle, degrees=False, heightToTarget=HEIGHT_TO_TARGET)
 # runPipeline() is called every frame by Limelight's backend.
 def runPipeline(image, llrobot):
     llpython = [361.0, -1.0, 0, 0, 0, 0, 0, 0]
+    printConstants()
+
     # STEP 1: IDENTIFY THE TARGET
 
     # getting HSV filter to distinguish the target from surroundings
@@ -292,3 +314,10 @@ def runPipeline(image, llrobot):
     # and optionally an array of up to 8 values for the "llpython"
     # networktables array
     return largestConvex, image, llpython
+
+# if __name__ == "__main__":
+#     printConstants()
+#     verticalAngle = getAngle(1, (270, 240))
+#     print("verticalAngle: ", angleToDegrees(verticalAngle))
+#     horizontalDistance = getHorizontalDistance(verticalAngle)
+#     print("horizontalDistance: ", horizontalDistance)
