@@ -6,7 +6,7 @@ import sys
 
 # global variables go here:
 # test script 0
-testVar = 0
+count = 0
 
 # CONSTANTS
 CAMERA_EXPOSURE         = 11 # (0.1 ms) to be set in "input" tab in limelight
@@ -197,10 +197,11 @@ def getAngle(img, orientation:int, coordinate:tuple):
     cX = coordinate[0]
     cY = coordinate[1]
 
-    print("h: ", h)
-    print("w: ", w)
-    print("cX: ", cX)
-    print("cY: ", cY)
+    # if count == 0:
+    #     print("h: ", h)
+    #     print("w: ", w)
+    #     print("cX: ", cX)
+    #     print("cY: ", cY)
 
     # centerPixel = (int(h/2), int(w/2))
     # distanceFromCenter = (math.sqrt(((cX - centerPixel[0]) **2 ) + ((cY - centerPixel[1]) ** 2)))
@@ -210,8 +211,9 @@ def getAngle(img, orientation:int, coordinate:tuple):
         angle = RADIANS_PER_PIXEL_X * distanceFromCenter
     elif orientation == 1:
         distanceFromCenter = centerPixel[1] - cY
-        print("distanceFromCenter: ", distanceFromCenter)
-        angle = RADIANS_PER_PIXEL_Y * distanceFromCenter + CAMERA_ANGLE
+        # if count == 0:
+        #     print("distanceFromCenter: ", distanceFromCenter)
+        angle = RADIANS_PER_PIXEL_Y * distanceFromCenter
     return angle
     # pixelRepresent = fov/(math.sqrt(h ** 2 + w ** 2))
     # return int(pixelRepresent * distanceFromCenter)
@@ -232,7 +234,6 @@ def getHorizontalDistance(angle, degrees=False, heightToTarget=HEIGHT_TO_TARGET)
 # runPipeline() is called every frame by Limelight's backend.
 def runPipeline(image, llrobot):
     llpython = [361.0, -1.0, 0, 0, 0, 0, 0, 0]
-    printConstants()
 
     # STEP 1: IDENTIFY THE TARGET
 
@@ -292,11 +293,20 @@ def runPipeline(image, llrobot):
         # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
         horizontalDistance = getHorizontalDistance(groundVerticalAngle)
 
+        # global count
+        # if count == 0:
+        #     # printConstants
+        #     print(HEIGHT_TO_TARGET)
+        #     print(groundVerticalAngle)
+        #     print(horizontalDistance)
+        #     print(HEIGHT_TO_TARGET / math.tan(groundVerticalAngle))
+        #     count += 1
+
         opticalHorizontalAngle = round(angleToDegrees(opticalHorizontalAngle), 2)
         opticalVerticalAngle = round(angleToDegrees(opticalVerticalAngle), 2)
         groundHorizontalAngle = round(angleToDegrees(groundHorizontalAngle), 2)
         groundVerticalAngle = round(angleToDegrees(groundVerticalAngle), 2)
-        horizontalDistance = round(angleToDegrees(horizontalDistance), 2)
+        horizontalDistance = round(horizontalDistance, 2)
 
         # writing to the NetworkTable
         llpython = [groundHorizontalAngle, horizontalDistance, 0, 0, 0, 0, 0, 0]
