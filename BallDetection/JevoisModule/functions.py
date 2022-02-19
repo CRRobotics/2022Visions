@@ -20,7 +20,7 @@ def HSVFilterRED(frame):
     return mask
 
 def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR):
-    "filters out contours that are smaller than min_size"
+    "filters out contours that are smaller than min_size and of certain vertices and of valid solidity"
     filteredContours = []
     numContours = 1 if len(contours) > 1 else len(contours)
     sortedContours = sorted(contours, key=lambda contour: -cv2.contourArea(contour))
@@ -75,9 +75,6 @@ def getAngle(img, orientation:int, coordinate:tuple):
     h, w, c = img.shape
     cX = coordinate[0]
     cY = coordinate[1]
-
-    # centerPixel = (int(h/2), int(w/2))
-    # distanceFromCenter = (math.sqrt(((cX - centerPixel[0]) **2 ) + ((cY - centerPixel[1]) ** 2)))
     centerPixel = (int(w / 2), int(h / 2))
     if orientation == 0:
         distanceFromCenter = cX - centerPixel[0]
@@ -86,8 +83,6 @@ def getAngle(img, orientation:int, coordinate:tuple):
         distanceFromCenter = centerPixel[1] - cY
         angle = constants.RADIANS_PER_PIXEL_Y * distanceFromCenter + angleToRadians(constants.CAMERA_ANGLE)
     return angleToDegrees(angle)
-    # pixelRepresent = fov/(math.sqrt(h ** 2 + w ** 2))
-    # return int(pixelRepresent * distanceFromCenter)
 
 def angleToRadians(degrees):
     "degrees to radians"

@@ -43,7 +43,7 @@ class BallDetection:
         self.blueBallAngle = -1
         self.blueBallDistance = -1  
         jevois.sendSerial("Constructor called")
-        jevois.LINFO("Constructor logging info")
+        jevois.LINFO("Constructor  logging info")
 
 
     # ###################################################################################################
@@ -108,7 +108,7 @@ class BallDetection:
 
                 "draws blue ball data onto frame"
                 cv2.putText(frame, "Horizontal Angle: %.2f"%(groundHorizontalAngleB), \
-                    (frame.shape[1] - 600, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
+                    (frame.shape[1] - 300, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
                 cv2.putText(frame, "Distance: %.3f"%(horizontalDistanceB), \
                     (frame.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
         except:

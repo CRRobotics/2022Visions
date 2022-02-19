@@ -5,9 +5,23 @@ import numpy as np
 import math
 import functions as f
 import constants
-
-"HERE ARE MY FUNCTIONS FROM MY CALCULATIONS"
-
+"run this with a webcam to test lol"
+# ((((((%(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((#(((((((((((((
+# (((((((%((((((((((((((((((((((((((((((((((@@@@*,/@@@@(((((((((((((%(((((((((((((
+# (((((((%(((((((((((((((((((@@/.@@,.,,@&,.,.,.,.,.,.,.,.,@@(((((((((%((((((((((((
+# ((((((((%(%((((((((((((@@,.,@,@,.,@,.,,,.,,,.,,,.,,,.,,,.,,@((((((((%(#(((((((((
+# (((((((((#(((((((((((@,......@@@@...................,,,,,,..,@(((((((%((((((((((
+# (((((((((%((((((((((@,,,.,,,.,,,.,,,.,,,.,,,.,,,,,,,,,,,,,,,,,@((((((##(((((((((
+# ((((((((((%(#(((((((@@@@.,.,.,.,.,.,.,.,.,.,,,,,,,,,,,,,,,,,,,,@((((((%(((((((((
+# ((((((((((%((((((&*.**@..,,,,,,,.,,,.,,,.,,,,,,,,,,,,,,,,,,,,,,@(((((((&@@@&&&&&
+# (((((((((((%((((((((((@@,,,,,,........,,,,,,,,,,,,,,,,,,,,,,,,,@&&&&&&&&&&&@@@@%
+# ((((((((((((%(((((((((((@@,,,,,,.,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,@@@@@%%%%%&&. ..&
+# ((((((((((((%(((((((((((((@*,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,@&#&%%%%%%%&&&&%%%
+# (((((((((((((%(%(((((((((((@@,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,@,.,&&%%%%@@@@*/*///
+# (((((((((((((##(@@@@&&&&&&&&&&@,,,,,,,,,,,,,,,,,,,,#@@,,,,@@@@@***/*/***/(((((((
+# (((((@@@@&&&&&&&&&&@@@@@#%%%%%%@,,,,,,,,,,,,@@@@@@@,,,,,@/*//(((((((((//////////
+# &&&&&&&&@@@@@%%%%%%%#. ... &%%%%@,,,,,,,@**//*/(((@@@@#####((/*/*/*/*/*/*/((((((
+# @@%%%%%&/....&%%%%%%%%%%%%@@@@*/@*,,,,,@########((((((((((//**(((((((((((((/*/*/
 def main():
     cap = cv2.VideoCapture(0)
 
@@ -40,20 +54,19 @@ def main():
                 
                 groundHorizontalAngleB = f.getGroundHorizontalAngle(opticalVerticalAngleB, opticalHorizontalAngleB)
 
-                # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
                 horizontalDistanceB = f.getDistance(opticalVerticalAngleB, opticalHorizontalAngleB)
                 groundHorizontalAngleB = round(f.angleToDegrees(groundHorizontalAngleB), 2)
                 horizontalDistanceB = abs(round(horizontalDistanceB, 2))
 
                 "draws blue ball data onto frame"
                 cv2.putText(frame, "Horizontal Angle: %.2f"%(groundHorizontalAngleB), \
-                    (frame.shape[1] - 600, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
+                    (frame.shape[1] - 200, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
                 cv2.putText(frame, "Distance: %.3f"%(horizontalDistanceB), \
                     (frame.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
         except:
             print(traceback.format_exc())
 
-
+        "RED FILTER"
         maskR = f.HSVFilterRED(blur)
         contoursR, hierarchy = cv2.findContours(maskR, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if contoursR:
@@ -74,7 +87,6 @@ def main():
 
                 groundHorizontalAngleR = f.getGroundHorizontalAngle(opticalVerticalAngleR, opticalHorizontalAngleR)
 
-                # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROROT)
                 horizontalDistanceR = f.getDistance(opticalVerticalAngleR, opticalHorizontalAngleR)
                 groundHorizontalAngleR = round(f.angleToDegrees(groundHorizontalAngleR), 2)
                 horizontalDistanceR = abs(round(horizontalDistanceR, 2))
