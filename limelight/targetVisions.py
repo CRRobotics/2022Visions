@@ -11,9 +11,11 @@ count = 0
 # CONSTANTS
 CAMERA_EXPOSURE         = 11 # (0.1 ms) to be set in "input" tab in limelight
 # HEIGHT_OF_CAMERA      = 29.5   # actual
-HEIGHT_OF_CAMERA        = 32.5   # test
 # HEIGHT_OF_TARGET      = 107.0  # actual
-HEIGHT_OF_TARGET        = 100.0  # test
+# HEIGHT_OF_CAMERA        = 32.5   # test
+# HEIGHT_OF_TARGET        = 100.0  # test
+HEIGHT_OF_CAMERA        = 32.0   # test hoop
+HEIGHT_OF_TARGET        = 74.0   # test hoop
 HEIGHT_TO_TARGET        = HEIGHT_OF_TARGET - HEIGHT_OF_CAMERA
 CAMERA_ANGLE		    = 28.1 * (math.pi / 180)
 
