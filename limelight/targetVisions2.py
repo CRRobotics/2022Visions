@@ -38,9 +38,6 @@ MIN_AREA_CONTOUR        = 1.0
 FOV_X                   = 59.6 * (math.pi / 180)
 FOV_Y                   = 45.7 * (math.pi / 180)
 
-FOV_X                   = 59.6 * (math.pi / 180)
-FOV_Y                   = 45.7 * (math.pi / 180)
-
 RADIANS_PER_PIXEL_X     = FOV_X / WIDTH
 RADIANS_PER_PIXEL_Y     = FOV_Y / HEIGHT
 
