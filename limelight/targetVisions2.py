@@ -199,23 +199,30 @@ def getOpticalAngle(img, orientation:int, coordinate:tuple):
  @param orientation The orientation of the angle (0 gets horizontal angle to the coordinate, 1 gets vertical angle to the tape)
  NOTE: vertical angle is only accurate if the x-coordinate of the center coordinate is in the middle of the frame
  @param coordinate The coordinate of the center of the tape or parabola"""
-    # h, w, c = img.shape
-    # # h = 240
-    # # w = 360
+    h, w, c = img.shape
+    # h = 240
+    # w = 360
 
     px = coordinate[0]
     py = coordinate[1]
-    nx = (1/160) * (px - 159.5)
-    ny = (1/120) * (119.5 - py)
+    # nx = (1/160) * (px - 159.5)
+    # ny = (1/120) * (119.5 - py)
 
     # distanceFromCenter = (math.sqrt(((cX - centerPixel[0]) **2 ) + ((cY - centerPixel[1]) ** 2)))
-    # centerPixel = (int(w / 2), int(h / 2))
+    centerPixel = (int(w / 2), int(h / 2))
     if orientation == 0:
-        angle = math.atan(nx / FOCAL_DISTANCE)
+        # angle = math.atan(nx / FOCAL_DISTANCE)
+        distanceFromCenter = px - centerPixel[0]
+        angle = RADIANS_PER_PIXEL_X * distanceFromCenter
     elif orientation == 1:
+        # angle = math.atan(ny / (math.sqrt(FOCAL_DISTANCE ** 2 + nx ** 2)))
+        distanceFromCenter = centerPixel[1] - py
+        # distanceFromCenter = math.sqrt(((px - centerPixel[0]) ** 2) + ((py - centerPixel[1]) ** 2))
+        # if centerPixel[1] - py < 0:
+        #     distanceFromCenter *= -1
+        angle = RADIANS_PER_PIXEL_Y * distanceFromCenter
         # if count == 0:
         #     print("distanceFromCenter: ", distanceFromCenter)
-        angle = math.atan(ny / (math.sqrt(FOCAL_DISTANCE ** 2 + nx ** 2)))
     return angle
     # pixelRepresent = fov/(math.sqrt(h ** 2 + w ** 2))
     # return int(pixelRepresent * distanceFromCenter)
@@ -291,6 +298,7 @@ def runPipeline(image, llrobot):
         groundHorizontalAngle = horizontalOpticalToGround(opticalHorizontalAngle)
         opticalVerticalAngle = getOpticalAngle(image, 1, vertex) if vertex is not None else getOpticalAngle(image, 1, centers[0])
         groundVerticalAngle = verticalOpticalToGround(opticalHorizontalAngle, opticalVerticalAngle)
+        # groundVerticalAngle = opticalVerticalAngle + CAMERA_ANGLE
 
         # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
         horizontalDistance = getHorizontalDistance(groundVerticalAngle)
