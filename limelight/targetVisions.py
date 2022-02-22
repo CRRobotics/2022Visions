@@ -9,22 +9,34 @@ import sys
 count = 0
 
 # CONSTANTS
-CAMERA_EXPOSURE         = 11 # (0.1 ms) to be set in "input" tab in limelight
-# HEIGHT_OF_CAMERA      = 29.5   # actual
-# HEIGHT_OF_TARGET      = 107.0  # actual
-# HEIGHT_OF_CAMERA        = 32.5   # test
-# HEIGHT_OF_TARGET        = 100.0  # test
-HEIGHT_OF_CAMERA        = 32.0   # test hoop
-HEIGHT_OF_TARGET        = 74.0   # test hoop
+CAMERA_EXPOSURE           = 11 # (0.1 ms) to be set in "input" tab in limelight
+
+# HEIGHT_OF_CAMERA        = 22.6   # actual
+# HEIGHT_OF_TARGET        = 104.0  # actual
+
+# HEIGHT_OF_CAMERA        = 22.6   # test hub
+# HEIGHT_OF_TARGET        = 102.0  # test hub
+
+# HEIGHT_OF_CAMERA        = 32.5   # test hub 2
+# HEIGHT_OF_TARGET        = 102.0  # test hub 2
+# HEIGHT_OF_CAMERA        = 32.0   # test hoop
+# HEIGHT_OF_TARGET        = 74.0  # test hoop
+# HEIGHT_OF_CAMERA        = 16.0   # test hoop 2
+# HEIGHT_OF_TARGET        = 74.0  # test hoop 2
+
+HEIGHT_OF_CAMERA        = 29.0   # bert house
+HEIGHT_OF_TARGET        = 71.0  # bert house
+
 HEIGHT_TO_TARGET        = HEIGHT_OF_TARGET - HEIGHT_OF_CAMERA
 CAMERA_ANGLE		    = 28.1 * (math.pi / 180)
+# CAMERA_ANGLE		    = 61.9 * (math.pi / 180)
 
 
 # THIS VALUE HAS BEEN DETERMINED BY CLOSE-TESTING, CAHNGE THESE VALUES LATER
 MIN_AREA_CONTOUR        = 1.0
 
-FOV_X                   = 54 * (math.pi / 180)
-FOV_Y                   = 41 * (math.pi / 180)
+FOV_X                   = 59.6 * (math.pi / 180)
+FOV_Y                   = 45.7 * (math.pi / 180)
 
 RADIANS_PER_PIXEL_X     = FOV_X / 320
 RADIANS_PER_PIXEL_Y     = FOV_Y / 240
@@ -87,7 +99,7 @@ def binarizeSubt(img):
     # print(type(blue[0][0]), type(green[0][0]), type(red[0][0]))
     diff = cv2.subtract(green, red)
     # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_OTSU)
-    ret, binImage = cv2.threshold(diff, 100, 255, cv2.THRESH_BINARY)
+    ret, binImage = cv2.threshold(diff, 85, 255, cv2.THRESH_BINARY)
     # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     # binImage = cv2.cvtColor(binImage, cv2.COLOR_BGR2GRAY) # idk if we need this
     return binImage
@@ -234,6 +246,9 @@ def verticalOpticalToGround(opticalHorizontalAngle, opticalVerticalAngle):
 # determines the horizontal distance to the target based on the angle and height of the target relative to the robot
 def getHorizontalDistance(angle, degrees=False, heightToTarget=HEIGHT_TO_TARGET):
     return heightToTarget / math.tan(angleToRadians(angle)) if degrees else heightToTarget / math.tan(angle)
+
+def correctDistance(horizontalDistance):
+    return ((-0.377162629757785 * horizontalDistance + 31.4878892733564) * -1) + horizontalDistance
     
 # runPipeline() is called every frame by Limelight's backend.
 def runPipeline(image, llrobot):
@@ -295,7 +310,9 @@ def runPipeline(image, llrobot):
         groundVerticalAngle = verticalOpticalToGround(opticalHorizontalAngle, opticalVerticalAngle)
 
         # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
-        horizontalDistance = getHorizontalDistance(groundVerticalAngle)
+        # horizontalDistance = getHorizontalDistance(groundVerticalAngle)
+        horizontalDistance = getHorizontalDistance(opticalVerticalAngle + CAMERA_ANGLE)
+        horizontalDistance = correctDistance(horizontalDistance)
 
         # global count
         # if count == 0:
@@ -316,7 +333,7 @@ def runPipeline(image, llrobot):
         llpython = [groundHorizontalAngle, horizontalDistance, 0, 0, 0, 0, 0, 0]
 
         # displaying the horizontal and vertical angles on the image
-        cv2.putText(image, "Horizontal Angle: " + str(groundHorizontalAngle) + "  Vertical Angle: " + str(groundVerticalAngle), \
+        cv2.putText(image, "Horizontal Angle: " + str(groundHorizontalAngle) + "  Vertical Angle: " + str(opticalVerticalAngle), \
             (image.shape[1] - 310, image.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 2)
 
         # displaying the horizontal distance to the target on the image
