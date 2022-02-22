@@ -12,11 +12,11 @@ count = 0
 
 CAMERA_EXPOSURE           = 11 # (0.1 ms) to be set in "input" tab in limelight
 
-# HEIGHT_OF_CAMERA        = 22.6   # actual
+# HEIGHT_OF_CAMERA        = 29.0   # actual
 # HEIGHT_OF_TARGET        = 104.0  # actual
 
-# HEIGHT_OF_CAMERA        = 22.6   # test hub
-# HEIGHT_OF_TARGET        = 102.0  # test hub
+HEIGHT_OF_CAMERA        = 29.0   # test hub
+HEIGHT_OF_TARGET        = 102.0  # test hub
 
 # HEIGHT_OF_CAMERA        = 32.5   # test hub 2
 # HEIGHT_OF_TARGET        = 102.0  # test hub 2
@@ -25,8 +25,8 @@ CAMERA_EXPOSURE           = 11 # (0.1 ms) to be set in "input" tab in limelight
 # HEIGHT_OF_CAMERA        = 16.0   # test hoop 2
 # HEIGHT_OF_TARGET        = 74.0  # test hoop 2
 
-HEIGHT_OF_CAMERA        = 29.0   # bert house
-HEIGHT_OF_TARGET        = 71.0  # bert house
+# HEIGHT_OF_CAMERA        = 29.0   # bert house
+# HEIGHT_OF_TARGET        = 71.0  # bert house
 
 HEIGHT_TO_TARGET        = HEIGHT_OF_TARGET - HEIGHT_OF_CAMERA
 CAMERA_ANGLE		    = 28.1 * (math.pi / 180)
@@ -91,7 +91,7 @@ def binarizeSubt(img):
     # print(type(blue[0][0]), type(green[0][0]), type(red[0][0]))
     diff = cv2.subtract(green, red)
     # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_OTSU)
-    ret, binImage = cv2.threshold(diff, 85, 255, cv2.THRESH_BINARY)
+    ret, binImage = cv2.threshold(diff, 75, 255, cv2.THRESH_BINARY)
     # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     # binImage = cv2.cvtColor(binImage, cv2.COLOR_BGR2GRAY) # idk if we need this
     return binImage
