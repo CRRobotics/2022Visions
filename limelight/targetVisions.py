@@ -10,7 +10,7 @@ count = 0
 
 # CONSTANTS
 
-CAMERA_EXPOSURE           = 16 # 11 # (0.1 ms) to be set in "input" tab in limelight
+CAMERA_EXPOSURE         = 16 # 11 # (0.1 ms) to be set in "input" tab in limelight
 
 # HEIGHT_OF_CAMERA        = 29.0   # actual
 # HEIGHT_OF_TARGET        = 104.0  # actual
