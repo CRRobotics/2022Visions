@@ -87,6 +87,7 @@ def getAngleRelativeToCenterOfRotation(actualDistance, groundHorizontalAngle, di
     """returns the angle (radians) relative to the center of rotation. 
     This will be send through serial to the rio"""
     if groundHorizontalAngle < 0:
+        print("less than 0")
         phi = math.pi/2-abs(groundHorizontalAngle)
         tg = math.sin(phi) * actualDistance
         th = tg + distanceToCenterOfRotation
@@ -95,13 +96,17 @@ def getAngleRelativeToCenterOfRotation(actualDistance, groundHorizontalAngle, di
         r = math.atan(th/hr)
         return -(math.pi/2-r)
     else:
-        phi = math.pi/2-abs(groundHorizontalAngle)
+        cnst = 1
+        phi = math.pi/2-groundHorizontalAngle
         cb = math.cos(phi) * actualDistance
-        db = abs(distanceToMiddleOfBot - cb)
+        dbRAW = distanceToMiddleOfBot - cb
+        if dbRAW > 0:
+            cnst = -1
+        db = abs(dbRAW)
         ab = math.tan(phi) * cb
         abP = distanceToCenterOfRotation + ab
         center = math.atan(abP/db)
-        return math.pi/2-center
+        return cnst * (math.pi/2-center)
 
 
 

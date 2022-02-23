@@ -103,7 +103,7 @@ class BallDetection:
                 horizontalDistanceB = round(f.getCorrection(horizontalDistanceB), 2)
                 bothorizontalDistanceB = abs(round(f.getCorrection((f.getDistanceRelativeToBot(horizontalDistanceB, groundHorizontalAngleB)), constants.ERROR_SLOPE_POST_TRANSLATION, constants.ERROR_INTERCEPT_POST_TRANSLATION), 2))
 
-                centerOfRotationAngleB = round(f.getCorrection(f.angleToDegrees(f.getAngleRelativeToCenterOfRotation(horizontalDistanceB, groundHorizontalAngleB)), constants.ERROR_SLOPE_ANGLE, constants.ERROR_INTERCEPT_ANGLE),2)
+                centerOfRotationAngleB = round(f.angleToDegrees(f.getAngleRelativeToCenterOfRotation(horizontalDistanceB, groundHorizontalAngleB)),2)
 
                 self.blueBallAngle = centerOfRotationAngleB
                 self.blueBallDistance = bothorizontalDistanceB
@@ -114,7 +114,8 @@ class BallDetection:
                     (frame.shape[1] - 300, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
                 cv2.putText(frame, "Distance (bot): %.3f"%(bothorizontalDistanceB), \
                     (frame.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
-
+                cv2.putText(frame, "groundHorizontal (radians): %.3f"%(groundHorizontalAngleB), \
+                    (frame.shape[1] - 500, 40), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
         except:
             print(traceback.format_exc())
 
@@ -147,7 +148,7 @@ class BallDetection:
                 bothorizontalDistanceR = round(f.getDistanceRelativeToBot(horizontalDistanceR, groundHorizontalAngleR), 2)
                 bothorizontalDistanceR = abs(round(f.getCorrection((f.getDistanceRelativeToBot(horizontalDistanceR, groundHorizontalAngleR)), constants.ERROR_SLOPE_POST_TRANSLATION, constants.ERROR_INTERCEPT_POST_TRANSLATION), 2))
 
-                centerOfRotationAngleR = round(f.getCorrection(f.angleToDegrees(f.getAngleRelativeToCenterOfRotation(horizontalDistanceR, groundHorizontalAngleR)), constants.ERROR_SLOPE_ANGLE, constants.ERROR_INTERCEPT_ANGLE),2)
+                centerOfRotationAngleR = round(f.angleToDegrees(f.getAngleRelativeToCenterOfRotation(horizontalDistanceR, groundHorizontalAngleR)),2)
 
                 self.redBallAngle = centerOfRotationAngleR
                 self.redBallDistance = bothorizontalDistanceR
