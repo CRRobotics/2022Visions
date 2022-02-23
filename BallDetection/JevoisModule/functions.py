@@ -93,7 +93,7 @@ def getAngleRelativeToCenterOfRotation(actualDistance, groundHorizontalAngle, di
         b = (th/math.tan(phi)) - (distanceToCenterOfRotation/math.tan(phi))
         hr = b + distanceToMiddleOfBot
         r = math.atan(th/hr)
-        return math.pi/2-r
+        return -(math.pi/2-r)
     else:
         phi = math.pi/2-abs(groundHorizontalAngle)
         cb = math.cos(phi) * actualDistance
