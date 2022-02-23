@@ -97,20 +97,24 @@ class BallDetection:
                 
                 groundHorizontalAngleB = f.getGroundHorizontalAngle(opticalVerticalAngleB, opticalHorizontalAngleB)
 
-                # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROBOT)
-                horizontalDistanceB = f.getDistance(opticalVerticalAngleB, opticalHorizontalAngleB)
-                groundHorizontalAngleB = round(f.angleToDegrees(groundHorizontalAngleB), 2)
-                horizontalDistanceB = abs(round(horizontalDistanceB, 2))
 
-                self.blueBallAngle = groundHorizontalAngleB
-                self.blueBallDistance = horizontalDistanceB
+                horizontalDistanceB = abs(f.getDistance(opticalVerticalAngleB, opticalHorizontalAngleB))
+
+                horizontalDistanceB = round(f.getCorrection(horizontalDistanceB), 2)
+                bothorizontalDistanceB = abs(round(f.getCorrection((f.getDistanceRelativeToBot(horizontalDistanceB, groundHorizontalAngleB)), constants.ERROR_SLOPE_POST_TRANSLATION, constants.ERROR_INTERCEPT_POST_TRANSLATION), 2))
+
+                centerOfRotationAngleB = round(f.getCorrection(f.angleToDegrees(f.getAngleRelativeToCenterOfRotation(horizontalDistanceB, groundHorizontalAngleB)), constants.ERROR_SLOPE_ANGLE, constants.ERROR_INTERCEPT_ANGLE),2)
+
+                self.blueBallAngle = centerOfRotationAngleB
+                self.blueBallDistance = bothorizontalDistanceB
 
 
                 "draws blue ball data onto frame"
-                cv2.putText(frame, "Horizontal Angle: %.2f"%(groundHorizontalAngleB), \
+                cv2.putText(frame, "Horizontal Angle: %.2f"%(centerOfRotationAngleB), \
                     (frame.shape[1] - 300, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
-                cv2.putText(frame, "Distance: %.3f"%(horizontalDistanceB), \
+                cv2.putText(frame, "Distance (bot): %.3f"%(bothorizontalDistanceB), \
                     (frame.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
+
         except:
             print(traceback.format_exc())
 
@@ -136,17 +140,22 @@ class BallDetection:
                 groundHorizontalAngleR = f.getGroundHorizontalAngle(opticalVerticalAngleR, opticalHorizontalAngleR)
 
                 # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROROT)
-                horizontalDistanceR = f.getDistance(opticalVerticalAngleR, opticalHorizontalAngleR)
-                groundHorizontalAngleR = round(f.angleToDegrees(groundHorizontalAngleR), 2)
-                horizontalDistanceR = abs(round(horizontalDistanceR, 2))
 
-                self.redBallAngle = groundHorizontalAngleR
-                self.redBallDistance = horizontalDistanceR
+                horizontalDistanceR = abs(f.getDistance(opticalVerticalAngleR, opticalHorizontalAngleR))
+                horizontalDistanceR = round(f.getCorrection(horizontalDistanceR), 2)
+
+                bothorizontalDistanceR = round(f.getDistanceRelativeToBot(horizontalDistanceR, groundHorizontalAngleR), 2)
+                bothorizontalDistanceR = abs(round(f.getCorrection((f.getDistanceRelativeToBot(horizontalDistanceR, groundHorizontalAngleR)), constants.ERROR_SLOPE_POST_TRANSLATION, constants.ERROR_INTERCEPT_POST_TRANSLATION), 2))
+
+                centerOfRotationAngleR = round(f.getCorrection(f.angleToDegrees(f.getAngleRelativeToCenterOfRotation(horizontalDistanceR, groundHorizontalAngleR)), constants.ERROR_SLOPE_ANGLE, constants.ERROR_INTERCEPT_ANGLE),2)
+
+                self.redBallAngle = centerOfRotationAngleR
+                self.redBallDistance = bothorizontalDistanceR
 
                 "draws red ball data onto frame"
-                cv2.putText(frame, "Horizontal Angle: %.2f"%(groundHorizontalAngleR), \
+                cv2.putText(frame, "Horizontal Angle: %.2f"%(centerOfRotationAngleR), \
                     (10, frame.shape[0] - 50), cv2.FONT_HERSHEY_SIMPLEX, .75, (0, 0, 255), 2)
-                cv2.putText(frame, "Distance: %.3f"%(horizontalDistanceR), \
+                cv2.putText(frame, "Distance: %.3f"%(bothorizontalDistanceR), \
                     (frame.shape[1] - 600, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         except:
             print(traceback.format_exc())

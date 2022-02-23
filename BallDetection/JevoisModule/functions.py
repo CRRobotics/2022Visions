@@ -63,6 +63,47 @@ def getDistance(verticalOptical, horizontalOptical, height_to_target = constants
     return (1/math.cos(math.atan(math.tan(horizontalOptical) * (math.tan(tilt)/math.sin(tilt))))) * (height_to_target/math.tan(tilt + verticalOptical))
 
 
+def getCorrection(reportedDistance, slope=constants.ERROR_SLOPE, intercept = constants.ERROR_INTERCEPT):
+    "returns actual distance based on error calculation takes in raw distance from getDistance()"
+    approx_Error = slope * reportedDistance + intercept
+    return reportedDistance + approx_Error
+
+def getDistanceRelativeToBot(actualDistance, groundHorizontalAngle, distanceToMiddleOfBot=constants.DISTANCE_FROM_MIDDLE_OF_BOT):
+    "returns distance relative to the bot based on approx distance from getActualDistance() and ground Horizontal angle from getGroundHorizontalAngle() This will be sent to the rio via serial"
+    if groundHorizontalAngle < 0:
+        phi = math.pi/2-abs(groundHorizontalAngle)
+        d = math.atan((math.sin(phi) * actualDistance)/(distanceToMiddleOfBot + math.cos(phi) * distanceToMiddleOfBot))
+        return (math.sin(phi) * actualDistance)
+    else:
+        phi = math.pi/2-abs(groundHorizontalAngle)
+        cb = math.cos(phi) * actualDistance
+        db = abs(distanceToMiddleOfBot - cb)
+        ab = math.tan(phi) * cb
+        d = math.atan(ab/db)
+        return ab/math.sin(d)
+
+
+def getAngleRelativeToCenterOfRotation(actualDistance, groundHorizontalAngle, distanceToMiddleOfBot=constants.DISTANCE_FROM_MIDDLE_OF_BOT, distanceToCenterOfRotation = constants.DISTANCE_FROM_MIDDLE_TO_CENTER_OF_ROTATION):
+    """returns the angle (radians) relative to the center of rotation. 
+    This will be send through serial to the rio"""
+    if groundHorizontalAngle < 0:
+        phi = math.pi/2-abs(groundHorizontalAngle)
+        tg = math.sin(phi) * actualDistance
+        th = tg + distanceToCenterOfRotation
+        b = (th/math.tan(phi)) - (distanceToCenterOfRotation/math.tan(phi))
+        hr = b + distanceToMiddleOfBot
+        r = math.atan(th/hr)
+        return math.pi/2-r
+    else:
+        phi = math.pi/2-abs(groundHorizontalAngle)
+        cb = math.cos(phi) * actualDistance
+        db = abs(distanceToMiddleOfBot - cb)
+        ab = math.tan(phi) * cb
+        abP = distanceToCenterOfRotation + ab
+        center = math.atan(abP/db)
+        return math.pi/2-center
+
+
 
 
 def getAngle(img, orientation:int, coordinate:tuple):
