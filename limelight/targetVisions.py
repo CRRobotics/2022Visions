@@ -10,7 +10,7 @@ count = 0
 
 # CONSTANTS
 
-CAMERA_EXPOSURE         = 16 # 11 # (0.1 ms) to be set in "input" tab in limelight
+CAMERA_EXPOSURE           = 16 # 11 # (0.1 ms) to be set in "input" tab in limelight
 
 # HEIGHT_OF_CAMERA        = 29.0   # actual
 # HEIGHT_OF_TARGET        = 104.0  # actual
@@ -33,7 +33,8 @@ CAMERA_ANGLE		    = 28.1 * (math.pi / 180)
 WIDTH                   = 320
 HEIGHT                  = 240
 
-MIN_AREA_CONTOUR        = 1.0
+# MIN_AREA_CONTOUR        = 1.0
+MIN_AREA_CONTOUR        = 1.2
 
 FOV_X                   = 59.6 * (math.pi / 180)
 FOV_Y                   = 45.7 * (math.pi / 180)
@@ -61,9 +62,19 @@ FOCAL_DISTANCE          = (WIDTH / 2) / math.tan((FOV_X) / 2)
 # sat = [174, 255]
 # val = [158, 255]
 
-hue = [73, 122]
-sat = [0, 255]
-val = [146, 255]
+# hue = [73, 122]
+# sat = [0, 255]
+# val = [146, 255]
+
+# multi-purpose room
+# hue = [65, 88]
+# sat = [37, 209]
+# val = [141, 255]
+
+hue = [63, 87]
+sat = [34, 209]
+val = [141, 255]
+
 
 # HELPER FUNCTIONS
 def printConstants():
@@ -91,7 +102,7 @@ def binarizeSubt(img):
     # print(type(blue[0][0]), type(green[0][0]), type(red[0][0]))
     diff = cv2.subtract(green, red)
     # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_OTSU)
-    ret, binImage = cv2.threshold(diff, 79, 255, cv2.THRESH_BINARY)
+    ret, binImage = cv2.threshold(diff, 100, 255, cv2.THRESH_BINARY)
     # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     # binImage = cv2.cvtColor(binImage, cv2.COLOR_BGR2GRAY) # idk if we need this
     return binImage
@@ -102,7 +113,7 @@ def binarizeSubt2(img):
     cyan = cyan.astype("uint8")
     diff = cv2.subtract(cyan, red)
     diff.astype("uint8")
-    ret, binImage = cv2.threshold(diff, 110, 255, cv2.THRESH_BINARY)
+    ret, binImage = cv2.threshold(diff, 120, 255, cv2.THRESH_BINARY)
     return binImage
 
 def filterContours(contours, min_size = MIN_AREA_CONTOUR):
@@ -247,14 +258,15 @@ def runPipeline(image, llrobot):
     # STEP 1: IDENTIFY THE TARGET
 
     # getting HSV filter to distinguish the target from surroundings
+    mask = HSVFilter(image)
+
+    # subtracting red light from green light (to be used instead of HSV filtering)
+    # mask = binarizeSubt(image)
+
     # mask1 = HSVFilter(image).astype("float32")
     # mask2 = binarizeSubt(image).astype("float32")
     # mask = 255 * (mask1 + mask2)
     # mask = mask.clip(0, 255).astype("uint8")
-
-    mask = binarizeSubt(image)
-
-    # mask = HSVFilter(image)
 
     # mask1 = HSVFilter(image)
     # mask2 = binarizeSubt(image)
@@ -263,8 +275,8 @@ def runPipeline(image, llrobot):
 
     # finding and filtering the contours in the image to only get the contour of the tape
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    contours = filterContours(contours)
     convexHulls = [cv2.convexHull(contour) for contour in contours]
+    convexHulls = filterContours(convexHulls)
     largestConvex = convexHulls[0] if len(convexHulls) > 0 else np.array([[]])
 
     # getting convex hulls
@@ -277,7 +289,7 @@ def runPipeline(image, llrobot):
         #     #im having a stroke trying to get a list of (x,y) coordinates
         #     c = get_leftmost_and_rightmost_coords(image, coordsOfConvexHulls)
         #     if c:
-        #         print(Center(image, c[0],c[1]))
+        #         print(Center(image, c[0], c[1]))
         #     #action = Center(image, c[0], c[1])
         #     #print(action)
         
