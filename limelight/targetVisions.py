@@ -10,7 +10,10 @@ count = 0
 
 # CONSTANTS
 
-CAMERA_EXPOSURE           = 16 # 11 # (0.1 ms) to be set in "input" tab in limelight
+CAMERA_EXPOSURE           = 3 # 16 # 11 # (0.1 ms) to be set in "input" tab in limelight
+BLACK_LEVEL_OFFSET        = 1
+RED_BALANCE               = 2500
+BLUE_BALANCE              = 1975
 
 # HEIGHT_OF_CAMERA        = 29.0   # actual
 # HEIGHT_OF_TARGET        = 104.0  # actual
@@ -102,7 +105,7 @@ def binarizeSubt(img):
     # print(type(blue[0][0]), type(green[0][0]), type(red[0][0]))
     diff = cv2.subtract(green, red)
     # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_OTSU)
-    ret, binImage = cv2.threshold(diff, 100, 255, cv2.THRESH_BINARY)
+    ret, binImage = cv2.threshold(diff, 10, 255, cv2.THRESH_BINARY)
     # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     # binImage = cv2.cvtColor(binImage, cv2.COLOR_BGR2GRAY) # idk if we need this
     return binImage
@@ -258,10 +261,10 @@ def runPipeline(image, llrobot):
     # STEP 1: IDENTIFY THE TARGET
 
     # getting HSV filter to distinguish the target from surroundings
-    mask = HSVFilter(image)
+    # mask = HSVFilter(image)
 
     # subtracting red light from green light (to be used instead of HSV filtering)
-    # mask = binarizeSubt(image)
+    mask = binarizeSubt(image)
 
     # mask1 = HSVFilter(image).astype("float32")
     # mask2 = binarizeSubt(image).astype("float32")
