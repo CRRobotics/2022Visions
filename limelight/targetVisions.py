@@ -13,7 +13,7 @@ count = 0
 CAMERA_EXPOSURE           = 3 # 16 # 11 # (0.1 ms) to be set in "input" tab in limelight
 BLACK_LEVEL_OFFSET        = 1
 RED_BALANCE               = 2500
-BLUE_BALANCE              = 1975
+BLUE_BALANCE              = 1975 # 1731?
 
 # HEIGHT_OF_CAMERA        = 29.0   # actual
 # HEIGHT_OF_TARGET        = 104.0  # actual
