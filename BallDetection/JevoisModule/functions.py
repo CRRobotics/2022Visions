@@ -1,4 +1,5 @@
 import cv2
+import numpy
 import constants
 import math
 
@@ -7,47 +8,47 @@ def putCenterPixelIn(frame):
     centerPixel = (int(w / 2), int(h / 2))
     cv2.circle(frame, centerPixel, 3, (255, 0, 255), -1)
 
-def HSVFilterBLUE(frame):
+
+def blur(frame:numpy.ndarray) -> numpy.ndarray:
+    ksize = int(2 * round(constants.BLUR_RADIUS) + 1)
+    blur = cv2.blur(frame, (ksize,ksize))
+    return blur
+
+def HSVFilterBLUE(frame:numpy.ndarray) -> numpy.ndarray:
     "returns filtered img"
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, (constants.hue_B[0], constants.sat_B[0], constants.val_B[0]), (constants.hue_B[1], constants.sat_B[1], constants.val_B[1]))
     return mask
 
-def HSVFilterRED(frame):
+def HSVFilterRED(frame:numpy.ndarray):
     "returns filtered img"
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, (constants.hue_R[0], constants.sat_R[0], constants.val_R[0]), (constants.hue_R[1], constants.sat_R[1], constants.val_R[1]))
     return mask
 
-def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR):
+def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR, min_vertices = constants.MIN_VERTICES_CONTOUR, solidity = constants.SOLIDITY):
     "filters out contours that are smaller than min_size and of certain vertices and of valid solidity"
     filteredContours = []
     numContours = 1 if len(contours) > 1 else len(contours)
     sortedContours = sorted(contours, key=lambda contour: -cv2.contourArea(contour))
-    finalContours = []
     for i in range(numContours):
-        # area = cv2.contourArea(sortedContours[i])
-        # if area < min_size:
-        #     break
-        if len(sortedContours[i]) > constants.MIN_VERTICES_CONTOUR:
+        if len(sortedContours[i]) > min_vertices:
             area = cv2.contourArea(sortedContours[i])
             hull = cv2.convexHull(sortedContours[i])
             solid = 100 * area / cv2.contourArea(hull)
-            if (solid > constants.SOLIDITY[0] and solid < constants.SOLIDITY[1]):
+            if (solid > solidity[0] and solid < solidity[1]):
                 filteredContours.append(sortedContours[i])
     return filteredContours
 
 
-def getCenters(img,contours):
+def getCenters(img,contours) ->list[set]:
     """_, contours, _ = cv2.findContours 
-    returns centers of all polygons"""
-
+    returns centerroids of all contours or convex hulls"""
     centres = []
     for i in range(len(contours)):
         moments = cv2.moments(contours[i])
         centres.append((int(moments['m10']/moments['m00']), int(moments['m01']/moments['m00'])))
         cv2.circle(img, centres[-1], 3, (0, 0, 0), -1)
-    
     return centres
 
 def getGroundHorizontalAngle(verticalOptical, horizontalOptical, tilt = constants.CAMERA_ANGLE):

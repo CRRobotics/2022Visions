@@ -3,13 +3,13 @@ import os
 import sys
 import library.constants as constants
 import library.functions as functions
-from networktables import NetworkTables
-# from testing.gripTest import GripPipeline
+# from networktables import NetworkTables
+# # from testing.gripTest import GripPipeline
 
 
-# set up network tables
-NetworkTables.initialize(server="roborio-639-frc.local")
-sd = NetworkTables.getTable("Visions")
+# # set up network tables
+# NetworkTables.initialize(server="roborio-639-frc.local")
+# sd = NetworkTables.getTable("Visions")
 
 print("imports done")
 cap = cv2.VideoCapture(0)
@@ -24,6 +24,7 @@ def process():
         try:
             # STEP 1: IDENTIFY THE TARGET
             isTrue, frame = cap.read()
+            print(type(frame))
             cv2.imshow("frame2", frame)
             
             # getting HSV filter to distinguish the target from surroundings

@@ -73,9 +73,7 @@ class BallDetection:
 
 
 
-        ksize = int(2 * round(constants.BLUR_RADIUS) + 1)
-        blur = cv2.blur(frame, (ksize,ksize))
-
+        blur = f.blur(frame)
         """BLUE FILTER"""
         mask = f.HSVFilterBLUE(blur)
         contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
