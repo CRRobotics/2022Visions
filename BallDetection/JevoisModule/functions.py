@@ -31,15 +31,28 @@ def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR, min_vertices
     filteredContours = []
     numContours = 1 if len(contours) > 1 else len(contours)
     sortedContours = sorted(contours, key=lambda contour: -cv2.contourArea(contour))
-    for i in range(numContours):
+    
+    for i in range(len(sortedContours)):
         if len(sortedContours[i]) > min_vertices:
             area = cv2.contourArea(sortedContours[i])
             hull = cv2.convexHull(sortedContours[i])
             solid = 100 * area / cv2.contourArea(hull)
             if (solid > solidity[0] and solid < solidity[1]):
                 filteredContours.append(sortedContours[i])
+                numContours -=1
+            if numContours == 0:
+                break
     return filteredContours
 
+
+def circleFilter(contours, percentage=0.01, min_area = constants.MIN_AREA_CONTOUR, minVert = constants.MIN_VERTICES_CONTOUR):
+    contour_list = []
+    for contour in contours:
+        approx = cv2.approxPolyDP(contour, percentage*cv2.arcLength(contour,True),True)
+        area = cv2.contourArea(contour)
+        if ((len(approx) > minVert) & (area > min_area) ):
+            contour_list.append(contour)
+    return contour_list
 
 def getCenters(img,contours) ->list[set]:
     """_, contours, _ = cv2.findContours 
@@ -88,7 +101,6 @@ def getAngleRelativeToCenterOfRotation(actualDistance, groundHorizontalAngle, di
     """returns the angle (radians) relative to the center of rotation. 
     This will be send through serial to the rio"""
     if groundHorizontalAngle < 0:
-        print("less than 0")
         phi = math.pi/2-abs(groundHorizontalAngle)
         tg = math.sin(phi) * actualDistance
         th = tg + distanceToCenterOfRotation

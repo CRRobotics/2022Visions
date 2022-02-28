@@ -23,28 +23,25 @@ import constants
 # &&&&&&&&@@@@@%%%%%%%#. ... &%%%%@,,,,,,,@**//*/(((@@@@#####((/*/*/*/*/*/*/((((((
 # @@%%%%%&/....&%%%%%%%%%%%%@@@@*/@*,,,,,@########((((((((((//**(((((((((((((/*/*/
 def main():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(r"C:\Users\trexx\Documents\CodeRed\2022Visions\BallDetection\cargoDetect.mp4")
 
-    while True:
+    while cap.isOpened():
         success, frame = cap.read()
 
-
-        ksize = int(2 * round(constants.BLUR_RADIUS) + 1)
-        blur = cv2.blur(frame, (ksize,ksize))
-
+        blur = f.blur(frame)
         """BLUE FILTER"""
         mask = f.HSVFilterBLUE(blur)
-        contoursB, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        if contoursB:
+        contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if contours:
             try:
-                contoursB = f.filterContours(contoursB)
-                convexHullsB = [cv2.convexHull(contour) for contour in contoursB]
-                cv2.drawContours(frame, convexHullsB, -1, (0, 255, 0), 1)
+                contours = f.circleFilter(contours)
+                #contours = f.filterContours(contours)
+                convexHulls = [cv2.convexHull(contour) for contour in contours]
+                cv2.drawContours(frame, convexHulls, -1, (255, 255, 0), 1)
             except:
                 pass
         try:
-            if contoursB:
-                centersB = f.getCenters(frame, convexHullsB) ##WILL GET 2 LARGEST CONTOURS
+            centersB = f.getCenters(frame, convexHulls) ##WILL GET 2 LARGEST CONTOURS
             if centersB:
                 opticalHorizontalAngleB = f.getAngle(frame, 0, centersB[0]) if centersB[0] is not None else f.getAngle(frame, 0, centersB[0])
                 opticalVerticalAngleB = f.getAngle(frame, 1, centersB[0]) if centersB[0] is not None else f.getAngle(frame, 1, centersB[0])
@@ -54,26 +51,35 @@ def main():
                 
                 groundHorizontalAngleB = f.getGroundHorizontalAngle(opticalVerticalAngleB, opticalHorizontalAngleB)
 
-                horizontalDistanceB = f.getDistance(opticalVerticalAngleB, opticalHorizontalAngleB)
-                groundHorizontalAngleB = round(f.angleToDegrees(groundHorizontalAngleB), 2)
-                horizontalDistanceB = abs(round(horizontalDistanceB, 2))
+
+                horizontalDistanceB = abs(f.getDistance(opticalVerticalAngleB, opticalHorizontalAngleB))
+
+                horizontalDistanceB = round(f.getCorrection(horizontalDistanceB), 2)
+                bothorizontalDistanceB = abs(round(f.getCorrection((f.getDistanceRelativeToBot(horizontalDistanceB, groundHorizontalAngleB)), constants.ERROR_SLOPE_POST_TRANSLATION, constants.ERROR_INTERCEPT_POST_TRANSLATION), 2))
+
+                centerOfRotationAngleB = round(f.angleToDegrees(f.getAngleRelativeToCenterOfRotation(horizontalDistanceB, groundHorizontalAngleB)),2)
+
+
 
                 "draws blue ball data onto frame"
-                cv2.putText(frame, "Horizontal Angle: %.2f"%(groundHorizontalAngleB), \
-                    (frame.shape[1] - 200, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
-                cv2.putText(frame, "Distance: %.3f"%(horizontalDistanceB), \
-                    (frame.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+                cv2.putText(frame, "Horizontal Angle: %.2f"%(centerOfRotationAngleB), \
+                    (frame.shape[1] - 300, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
+                cv2.putText(frame, "Distance (bot): %.3f"%(bothorizontalDistanceB), \
+                    (frame.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
+                cv2.putText(frame, "groundHorizontal (radians): %.3f"%(groundHorizontalAngleB), \
+                    (frame.shape[1] - 500, 40), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
         except:
             print(traceback.format_exc())
 
-        "RED FILTER"
         maskR = f.HSVFilterRED(blur)
         contoursR, hierarchy = cv2.findContours(maskR, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if contoursR:
             try:
+                contoursR = f.circleFilter(contoursR)
+
                 contoursR = f.filterContours(contoursR)
                 convexHullsR = [cv2.convexHull(contour) for contour in contoursR]
-                cv2.drawContours(frame, convexHullsR, -1, (0, 255, 0), 1)
+                cv2.drawContours(frame, convexHullsR, -1, (0, 255, 255), 1)
             except:
                 print("failed")
         try:
@@ -87,15 +93,20 @@ def main():
 
                 groundHorizontalAngleR = f.getGroundHorizontalAngle(opticalVerticalAngleR, opticalHorizontalAngleR)
 
-                horizontalDistanceR = f.getDistance(opticalVerticalAngleR, opticalHorizontalAngleR)
-                groundHorizontalAngleR = round(f.angleToDegrees(groundHorizontalAngleR), 2)
-                horizontalDistanceR = abs(round(horizontalDistanceR, 2))
+                # STEP 4: DETERMINE HORIZONTAL DISTANCE TO TARGET (FROM THE ROROT)
 
+                horizontalDistanceR = abs(f.getDistance(opticalVerticalAngleR, opticalHorizontalAngleR))
+                horizontalDistanceR = round(f.getCorrection(horizontalDistanceR), 2)
+
+                bothorizontalDistanceR = round(f.getDistanceRelativeToBot(horizontalDistanceR, groundHorizontalAngleR), 2)
+                bothorizontalDistanceR = abs(round(f.getCorrection((f.getDistanceRelativeToBot(horizontalDistanceR, groundHorizontalAngleR)), constants.ERROR_SLOPE_POST_TRANSLATION, constants.ERROR_INTERCEPT_POST_TRANSLATION), 2))
+
+                centerOfRotationAngleR = round(f.angleToDegrees(f.getAngleRelativeToCenterOfRotation(horizontalDistanceR, groundHorizontalAngleR)),2)
 
                 "draws red ball data onto frame"
-                cv2.putText(frame, "Horizontal Angle: %.2f"%(groundHorizontalAngleR), \
+                cv2.putText(frame, "Horizontal Angle: %.2f"%(centerOfRotationAngleR), \
                     (10, frame.shape[0] - 50), cv2.FONT_HERSHEY_SIMPLEX, .75, (0, 0, 255), 2)
-                cv2.putText(frame, "Distance: %.3f"%(horizontalDistanceR), \
+                cv2.putText(frame, "Distance: %.3f"%(bothorizontalDistanceR), \
                     (frame.shape[1] - 600, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         except:
             print(traceback.format_exc())

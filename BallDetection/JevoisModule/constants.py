@@ -1,18 +1,21 @@
 import math 
 
 
-hue_B = [89, 119]
+hue_B = [89, 119] 
+#hue_B = [50,180]
 sat_B = [144, 255]
 val_B= [41, 255]
 
-hue_R = [134, 180]
-sat_R = [118, 255]
+# hue_R = [134, 180]
+# sat_R = [118, 255]
+hue_R = [0, 180]
+sat_R = [200, 255]
 val_R= [0, 255]
 
 BLUR_RADIUS = 2.7027027027027173
 SOLIDITY = [66.0,100.0]
-MIN_VERTICES_CONTOUR = 25
-MIN_AREA_CONTOUR = 53.0
+MIN_VERTICES_CONTOUR = 10
+MIN_AREA_CONTOUR = 30
 
 
 CAMERA_EXPERIMENTAL_DISTANCE = 92

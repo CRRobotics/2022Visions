@@ -1,3 +1,4 @@
+from matplotlib.pyplot import contour
 import libjevois as jevois # type: ignore
 import cv2
 import numpy as np
@@ -79,6 +80,7 @@ class BallDetection:
         contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if contours:
             try:
+                contours = f.circleFilter(contours)
                 contours = f.filterContours(contours)
                 convexHulls = [cv2.convexHull(contour) for contour in contours]
                 cv2.drawContours(frame, convexHulls, -1, (0, 255, 0), 1)
@@ -122,6 +124,7 @@ class BallDetection:
         contoursR, hierarchy = cv2.findContours(maskR, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if contoursR:
             try:
+                contoursR = f.circleFilter(contoursR)
                 contoursR = f.filterContours(contoursR)
                 convexHullsR = [cv2.convexHull(contour) for contour in contoursR]
                 cv2.drawContours(frame, convexHullsR, -1, (0, 255, 0), 1)
