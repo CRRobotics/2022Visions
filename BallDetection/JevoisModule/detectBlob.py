@@ -35,7 +35,7 @@ def main():
         if contours:
             try:
                 contours = f.circleFilter(contours)
-                #contours = f.filterContours(contours)
+                contours = f.filterContours(contours)
                 convexHulls = [cv2.convexHull(contour) for contour in contours]
                 cv2.drawContours(frame, convexHulls, -1, (255, 255, 0), 1)
             except:

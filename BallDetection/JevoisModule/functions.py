@@ -31,7 +31,6 @@ def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR, min_vertices
     filteredContours = []
     numContours = 1 if len(contours) > 1 else len(contours)
     sortedContours = sorted(contours, key=lambda contour: -cv2.contourArea(contour))
-    
     for i in range(len(sortedContours)):
         if len(sortedContours[i]) > min_vertices:
             area = cv2.contourArea(sortedContours[i])
