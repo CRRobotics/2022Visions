@@ -38,7 +38,7 @@ def filterContours(contours, min_size = constants.MIN_AREA_CONTOUR, min_vertices
             solid = 100 * area / cv2.contourArea(hull)
             if (solid > solidity[0] and solid < solidity[1]):
                 filteredContours.append(sortedContours[i])
-                numContours -=1
+                numContours -= 1
             if numContours == 0:
                 break
     return filteredContours

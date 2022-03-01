@@ -23,7 +23,7 @@ import constants
 # &&&&&&&&@@@@@%%%%%%%#. ... &%%%%@,,,,,,,@**//*/(((@@@@#####((/*/*/*/*/*/*/((((((
 # @@%%%%%&/....&%%%%%%%%%%%%@@@@*/@*,,,,,@########((((((((((//**(((((((((((((/*/*/
 def main():
-    cap = cv2.VideoCapture(r"C:\Users\trexx\Documents\CodeRed\2022Visions\BallDetection\cargoDetect.mp4")
+    cap = cv2.VideoCapture(0)
 
     while cap.isOpened():
         success, frame = cap.read()
@@ -66,7 +66,7 @@ def main():
                     (frame.shape[1] - 300, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
                 cv2.putText(frame, "Distance (bot): %.3f"%(bothorizontalDistanceB), \
                     (frame.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
-                cv2.putText(frame, "groundHorizontal (radians): %.3f"%(groundHorizontalAngleB), \
+                cv2.putText(frame, "groundHorizontal (degrees): %.3f"%(f.angleToDegrees(groundHorizontalAngleB)), \
                     (frame.shape[1] - 500, 40), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
         except:
             print(traceback.format_exc())
