@@ -1,8 +1,6 @@
-from matplotlib.pyplot import contour
 import libjevois as jevois # type: ignore
 import cv2
 import numpy as np
-import json
 from datetime import datetime
 import re
 import functions as f

@@ -53,7 +53,7 @@ def circleFilter(contours, percentage=0.01, min_area = constants.MIN_AREA_CONTOU
             contour_list.append(contour)
     return contour_list
 
-def getCenters(img,contours) ->list[set]:
+def getCenters(img,contours):
     """_, contours, _ = cv2.findContours 
     returns centerroids of all contours or convex hulls"""
     centres = []
@@ -83,7 +83,7 @@ def getCorrection(reportedDistance, slope=constants.ERROR_SLOPE, intercept = con
 
 def getDistanceRelativeToBot(actualDistance, groundHorizontalAngle, distanceToMiddleOfBot=constants.DISTANCE_FROM_MIDDLE_OF_BOT):
     "returns distance relative to the bot based on approx distance from getActualDistance() and ground Horizontal angle from getGroundHorizontalAngle() This will be sent to the rio via serial"
-    if groundHorizontalAngle < 0:
+    if groundHorizontalAngle > 0:
         phi = math.pi/2-abs(groundHorizontalAngle)
         d = math.atan((math.sin(phi) * actualDistance)/(distanceToMiddleOfBot + math.cos(phi) * distanceToMiddleOfBot))
         return (math.sin(phi) * actualDistance)
@@ -99,21 +99,21 @@ def getDistanceRelativeToBot(actualDistance, groundHorizontalAngle, distanceToMi
 def getAngleRelativeToCenterOfRotation(actualDistance, groundHorizontalAngle, distanceToMiddleOfBot=constants.DISTANCE_FROM_MIDDLE_OF_BOT, distanceToCenterOfRotation = constants.DISTANCE_FROM_MIDDLE_TO_CENTER_OF_ROTATION):
     """returns the angle (radians) relative to the center of rotation. 
     This will be send through serial to the rio"""
-    if groundHorizontalAngle < 0:
+    if groundHorizontalAngle > 0:
         phi = math.pi/2-abs(groundHorizontalAngle)
         tg = math.sin(phi) * actualDistance
         th = tg + distanceToCenterOfRotation
         b = (th/math.tan(phi)) - (distanceToCenterOfRotation/math.tan(phi))
         hr = b + distanceToMiddleOfBot
         r = math.atan(th/hr)
-        return -(math.pi/2-r)
+        return (math.pi/2-r)
     else:
-        cnst = 1
-        phi = math.pi/2-groundHorizontalAngle
+        cnst = -1
+        phi = math.pi/2-abs(groundHorizontalAngle)
         cb = math.cos(phi) * actualDistance
         dbRAW = distanceToMiddleOfBot - cb
         if dbRAW > 0:
-            cnst = -1
+            cnst = 1
         db = abs(dbRAW)
         ab = math.tan(phi) * cb
         abP = distanceToCenterOfRotation + ab
