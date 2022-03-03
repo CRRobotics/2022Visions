@@ -1,8 +1,6 @@
-from matplotlib.pyplot import contour
 import libjevois as jevois # type: ignore
 import cv2
 import numpy as np
-import json
 from datetime import datetime
 import re
 import functions as f
@@ -114,8 +112,6 @@ class BallDetection:
                     (frame.shape[1] - 300, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
                 cv2.putText(frame, "Distance (bot): %.3f"%(bothorizontalDistanceB), \
                     (frame.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
-                cv2.putText(frame, "groundHorizontal (radians): %.3f"%(groundHorizontalAngleB), \
-                    (frame.shape[1] - 500, 40), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
         except:
             print(traceback.format_exc())
 
