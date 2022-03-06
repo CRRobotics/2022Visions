@@ -193,7 +193,7 @@ def getParabola(frame, centers):
     return vertex
 
 def getVertex(a, b, c):
-    "y = ax^2+bx+c"
+    "y = ax^2 + bx + c"
     return (int(-b / (2 * a)), int(((4 * a * c) - (b * b)) / (4 * a)))
 
 def angleToRadians(degrees):
