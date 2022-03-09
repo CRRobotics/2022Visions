@@ -21,6 +21,9 @@ BLUE_BALANCE              = 1975 # 1731?
 HEIGHT_OF_CAMERA        = 29.0   # test hub
 HEIGHT_OF_TARGET        = 102.0  # test hub
 
+# HEIGHT_OF_CAMERA        = 29.0   # h-courtyard
+# HEIGHT_OF_TARGET        = 83.0  # h-courtyard
+
 # HEIGHT_OF_CAMERA        = 32.5   # test hub 2
 # HEIGHT_OF_TARGET        = 102.0  # test hub 2
 # HEIGHT_OF_CAMERA        = 32.0   # test hoop
@@ -105,7 +108,7 @@ def binarizeSubt(img):
     # print(type(blue[0][0]), type(green[0][0]), type(red[0][0]))
     diff = cv2.subtract(green, red)
     # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_OTSU)
-    ret, binImage = cv2.threshold(diff, 10, 255, cv2.THRESH_BINARY)
+    ret, binImage = cv2.threshold(diff, 28, 255, cv2.THRESH_BINARY)
     # ret, binImage = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     # binImage = cv2.cvtColor(binImage, cv2.COLOR_BGR2GRAY) # idk if we need this
     return binImage
@@ -190,7 +193,7 @@ def getParabola(frame, centers):
     return vertex
 
 def getVertex(a, b, c):
-    "y = ax^2+bx+c"
+    "y = ax^2 + bx + c"
     return (int(-b / (2 * a)), int(((4 * a * c) - (b * b)) / (4 * a)))
 
 def angleToRadians(degrees):
