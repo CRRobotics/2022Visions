@@ -37,7 +37,7 @@ def main():
                 contours = f.circleFilter(contours)
                 contours = f.filterContours(contours)
                 convexHulls = [cv2.convexHull(contour) for contour in contours]
-                cv2.drawContours(frame, convexHulls, -1, (255, 255, 0), 1)
+                cv2.drawContours(frame, convexHulls, -1, (0, 255, 0), 1)
             except:
                 pass
         try:
@@ -66,10 +66,10 @@ def main():
                     (frame.shape[1] - 300, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
                 cv2.putText(frame, "Distance (bot): %.3f"%(bothorizontalDistanceB), \
                     (frame.shape[1] - 300, 20), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
-                cv2.putText(frame, "groundHorizontal (degrees): %.3f"%(f.angleToDegrees(groundHorizontalAngleB)), \
-                    (frame.shape[1] - 500, 40), cv2.FONT_HERSHEY_SIMPLEX, .75, (255, 0, 0), 2)
         except:
             print(traceback.format_exc())
+
+
 
         maskR = f.HSVFilterRED(blur)
         contoursR, hierarchy = cv2.findContours(maskR, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
