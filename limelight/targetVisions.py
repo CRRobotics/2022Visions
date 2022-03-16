@@ -15,11 +15,11 @@ BLACK_LEVEL_OFFSET        = 1
 RED_BALANCE               = 2500
 BLUE_BALANCE              = 1975 # 1731?
 
-# HEIGHT_OF_CAMERA        = 29.0   # actual
-# HEIGHT_OF_TARGET        = 104.0  # actual
+HEIGHT_OF_CAMERA        = 29.0   # actual
+HEIGHT_OF_TARGET        = 104.0  # actual
 
-HEIGHT_OF_CAMERA        = 29.0   # test hub
-HEIGHT_OF_TARGET        = 102.0  # test hub
+# HEIGHT_OF_CAMERA        = 29.0   # test hub
+# HEIGHT_OF_TARGET        = 102.0  # test hub
 
 # HEIGHT_OF_CAMERA        = 29.0   # h-courtyard
 # HEIGHT_OF_TARGET        = 83.0  # h-courtyard
@@ -125,7 +125,8 @@ def binarizeSubt2(img):
 def filterContours(contours, min_size = MIN_AREA_CONTOUR):
     "filters out contours that are smaller than min_size"
     filteredContours = []
-    numContours = 4 if len(contours) > 4 else len(contours)
+    # numContours = 4 if len(contours) > 4 else len(contours)
+    numContours = 5 if len(contours) > 5 else len(contours)
     sortedContours = sorted(contours, key=lambda contour: -cv2.contourArea(contour))
     for i in range(numContours):
         area = cv2.contourArea(sortedContours[i])
