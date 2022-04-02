@@ -101,6 +101,7 @@ def process():
             print(exc_type, fname, exc_tb.tb_lineno)
             # isTrue, frame = cap.read()
             # cv2.imshow("frame", frame)
+            
             # if cv2.waitKey(20) & 0xFF == ord("d"):
             #     print("done")
             #     break
