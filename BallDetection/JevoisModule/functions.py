@@ -1,3 +1,4 @@
+from tkinter import CENTER
 import cv2
 import numpy
 import constants
@@ -83,17 +84,8 @@ def getCorrection(reportedDistance, slope=constants.ERROR_SLOPE, intercept = con
 
 def getDistanceRelativeToBot(actualDistance, groundHorizontalAngle, distanceToMiddleOfBot=constants.DISTANCE_FROM_MIDDLE_OF_BOT):
     "returns distance relative to the bot based on approx distance from getActualDistance() and ground Horizontal angle from getGroundHorizontalAngle() This will be sent to the rio via serial"
-    if groundHorizontalAngle > 0:
-        phi = math.pi/2-abs(groundHorizontalAngle)
-        d = math.atan((math.sin(phi) * actualDistance)/(distanceToMiddleOfBot + math.cos(phi) * distanceToMiddleOfBot))
-        return (math.sin(phi) * actualDistance)
-    else:
-        phi = math.pi/2-abs(groundHorizontalAngle)
-        cb = math.cos(phi) * actualDistance
-        db = abs(distanceToMiddleOfBot - cb)
-        ab = math.tan(phi) * cb
-        d = math.atan(ab/db)
-        return ab/math.sin(d)
+    return math.sqrt(actualDistance**2 + distanceToMiddleOfBot ** 2 - 2 * actualDistance * distanceToMiddleOfBot * math.cos(math.pi/2 + groundHorizontalAngle))
+    "literally law of cosines"
 
 
 def getAngleRelativeToCenterOfRotation(actualDistance, groundHorizontalAngle, distanceToMiddleOfBot=constants.DISTANCE_FROM_MIDDLE_OF_BOT, distanceToCenterOfRotation = constants.DISTANCE_FROM_MIDDLE_TO_CENTER_OF_ROTATION):
