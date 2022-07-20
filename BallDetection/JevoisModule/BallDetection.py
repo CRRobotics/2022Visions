@@ -58,18 +58,10 @@ class BallDetection:
 
 
     def commonProcess(self, inframe, outframe = None):
-        # jevois.LINFO("inframe type is "+str(type(inframe)))
-        # Get the next camera image (may block until it is captured) and here convert it to OpenCV BGR. If you need a
-        # grayscale image, just use getCvGRAY() instead of getCvBGR(). Also supported are getCvRGB() and getCvRGBA():
         frame = inframe.getCvBGR()
-        
         # Start measuring image processing time (NOTE: does not account for input conversion time):
         self.timer.start()
         pipline_start_time = datetime.now()
-
-
-
-
 
 
         blur = f.blur(frame)
